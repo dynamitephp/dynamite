@@ -4,7 +4,7 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "doctrine/annotations": "^1",
+        "doctrine/annotations": "^1.11",
         "aws/aws-sdk-php": "^3"
     },
     "require-dev": {
