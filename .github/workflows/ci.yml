@@ -1,0 +1,81 @@
+name: Unit tests & Static Analysis
+on: [push]
+jobs:
+#   infection:
+#     name: Infection Mutation Test
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         php-versions: ['7.4']
+#         composer-versions:
+#           - composer:v1
+#         composer-deps:
+#           - stable
+#     steps:
+#     - uses: actions/checkout@v2
+
+#     - name: Install PHP ${{ matrix.php-versions }}
+#       uses: shivammathur/setup-php@v2
+#       with:
+#         php-version: ${{ matrix.php-versions }}
+#         tools: ${{ matrix.composer-versions }}
+
+#     - name: Install dependencies
+#       run: composer update --prefer-${{ matrix.composer-deps }} --prefer-dist --no-interaction
+#     - name: Run Infection
+#       run: vendor/bin/infection
+  psalm:
+    name: Psalm Static Analysis 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['7.4']
+        composer-versions:
+          - composer:v1
+        composer-deps:
+          - stable
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install PHP ${{ matrix.php-versions }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        tools: ${{ matrix.composer-versions }}
+
+    - name: Install dependencies
+      run: composer update --prefer-${{ matrix.composer-deps }} --prefer-dist --no-interaction
+    - name: Run Psalm
+      run: vendor/bin/psalm 
+            
+  phpunit:
+    name: PHPUnit Tests (PHP ${{ matrix.php-versions }}, Composer ${{ matrix.composer-versions }} --prefer-${{ matrix.composer-deps }})
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.php-versions == '8.0' }}
+    if: "!contains(github.event.head_commit.message, '[ci-skip]')"
+    strategy:
+      matrix:
+        php-versions: ['7.4','8.0']
+        composer-versions:
+          - composer:v1
+        composer-deps:
+          - stable
+          - lowest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install PHP ${{ matrix.php-versions }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        tools: ${{ matrix.composer-versions }}
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer update --prefer-${{ matrix.composer-deps }} --prefer-dist --no-interaction
+      
+    - name: Run Unit Tests
+      run: vendor/bin/phpunit
