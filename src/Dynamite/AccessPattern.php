@@ -27,28 +27,40 @@ class AccessPattern
     }
 
 
-    public function withIndex(string $index)
+    /**
+     * @return static
+     */
+    public function withIndex(string $index): self
     {
         $self = clone $this;
         $self->index = $index;
         return $self;
     }
 
-    public function withPartitionKeyFormat(string $pk)
+    /**
+     * @return static
+     */
+    public function withPartitionKeyFormat(string $pk): self
     {
         $self = clone $this;
         $self->partitionKeyFormat = $pk;
         return $self;
     }
 
-    public function withSortKeyFormat(string $sk)
+    /**
+     * @return static
+     */
+    public function withSortKeyFormat(string $sk): self
     {
         $self = clone $this;
         $self->sortKeyFormat = $sk;
         return $self;
     }
 
-    public function withOperation(AccessPatternOperation $operation)
+    /**
+     * @return static
+     */
+    public function withOperation(AccessPatternOperation $operation): self
     {
         $self = clone $this;
         $self->operation = $operation;

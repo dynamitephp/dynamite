@@ -16,13 +16,13 @@ use PHPUnit\Framework\TestCase;
 class ItemMappingReaderTest extends TestCase
 {
 
-    private function createItemMappingReader()
+    private function createItemMappingReader(): ItemMappingReader
     {
         return new ItemMappingReader(new AnnotationReader());
     }
 
 
-    public function testCheckingForMissingItemAnnotation()
+    public function testCheckingForMissingItemAnnotation(): void
     {
         $this->expectException(ItemMappingException::class);
         $this->expectExceptionMessage('Class "Dynamite\Tests\Fixtures\Dummy" does not have "Dynamite\Configuration\Item" annotation given.');
@@ -31,7 +31,7 @@ class ItemMappingReaderTest extends TestCase
         $parser->getMappingFor(Dummy::class);
     }
 
-    public function testCheckingForMissingPartitionKeyFormatAnnotation()
+    public function testCheckingForMissingPartitionKeyFormatAnnotation(): void
     {
         $this->expectException(ItemMappingException::class);
         $this->expectExceptionMessage('There is no PartitionKeyFormat annotation set in any property of "Dynamite\Tests\Fixtures\DummyItem" class.');
@@ -40,7 +40,7 @@ class ItemMappingReaderTest extends TestCase
         $parser->getMappingFor(DummyItem::class);
     }
 
-    public function testCheckingForMissingPartitionKeyProp()
+    public function testCheckingForMissingPartitionKeyProp(): void
     {
         $this->expectException(ItemMappingException::class);
         $this->expectExceptionMessage('There is no PartitionKey annotation set in any property of "Dynamite\Tests\Fixtures\DummyItemWithPartitionKeyFormat" class.');
@@ -50,7 +50,7 @@ class ItemMappingReaderTest extends TestCase
     }
 
 
-    public function testReadingFullPrimaryKeyMapping()
+    public function testReadingFullPrimaryKeyMapping(): void
     {
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(UserActivity::class);
@@ -62,7 +62,7 @@ class ItemMappingReaderTest extends TestCase
         $this->assertEquals('sk', $mapping->getSortKeyProperty());
     }
 
-    public function testReadingObjectType()
+    public function testReadingObjectType(): void
     {
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(UserActivity::class);

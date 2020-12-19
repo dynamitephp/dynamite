@@ -16,6 +16,9 @@ use Dynamite\Exception\ConfigurationException;
  */
 class Attribute extends AbstractAttribute
 {
+    /**
+     * @return void
+     */
     protected function assertType(string $type)
     {
         $allowedValues = [

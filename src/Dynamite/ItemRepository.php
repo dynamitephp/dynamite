@@ -61,7 +61,7 @@ class ItemRepository
         throw new \Exception('not implemented yet');
     }
 
-    public function getQueryBuilder()
+    public function getQueryBuilder(): void
     {
         throw new \Exception('not implemented yet');
 
@@ -99,7 +99,7 @@ class ItemRepository
         throw new \Exception('access pattern not found');
     }
 
-    public function store(object $item)
+    public function store(object $item): void
     {
         if (!($item instanceof $this->itemName)) {
             throw ItemRepositoryException::objectNotSupported(get_class($item), $this->itemName);

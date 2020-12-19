@@ -13,7 +13,7 @@ namespace Dynamite;
  */
 class ConditionExpression
 {
-    public static function attributeNotExists(string $attributeName)
+    public static function attributeNotExists(string $attributeName): void
     {
     }
 }

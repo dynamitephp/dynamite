@@ -16,6 +16,9 @@ use Dynamite\Exception\ConfigurationException;
 class NestedItemAttribute extends AbstractAttribute
 {
 
+    /**
+     * @return void
+     */
     protected function assertType(string $type)
     {
         if (!class_exists($type)) {

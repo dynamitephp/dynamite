@@ -55,7 +55,7 @@ class ItemMapping
     }
 
     /**
-     * @return AttributeInterface[]
+     * @return array<string,AttributeInterface>
      */
     public function getPropertiesMapping(): array
     {

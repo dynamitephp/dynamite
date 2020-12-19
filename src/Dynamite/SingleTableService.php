@@ -28,7 +28,7 @@ class SingleTableService
     }
 
 
-    public function putItem(string $partitionKeyVal, array $item, ?string $sortKeyValue = null)
+    public function putItem(string $partitionKeyVal, array $item, ?string $sortKeyValue = null): void
     {
         $item[$this->table->getPartitionKeyName()] = $partitionKeyVal;
         $item[$this->table->getSortKeyName()] = $sortKeyValue;
@@ -41,7 +41,12 @@ class SingleTableService
         $this->client->putItem($putItemRequest);
     }
 
-    public function simpleQuery(string $pk, ?string $sk = null, ?string $index = null)
+    /**
+     * @return (\stdClass|array)[]
+     *
+     * @psalm-return list<\stdClass|array>
+     */
+    public function simpleQuery(string $pk, ?string $sk = null, ?string $index = null): array
     {
         $partitionKeyAttr = $this->table->getPartitionKeyName();
         $sortKeyAttr = $this->table->getSortKeyName();
@@ -65,6 +70,7 @@ class SingleTableService
             $queryRequest['IndexName'] = $index;
         }
 
+        /** @psalm-var array<array-key, mixed> $items */
         $items = $this->client->query($queryRequest)->toArray()['Items'];
         $output = [];
 

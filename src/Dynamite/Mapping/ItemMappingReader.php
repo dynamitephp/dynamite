@@ -32,6 +32,7 @@ class ItemMappingReader
 
     /**
      * @param string $className
+     * @psalm-param class-string $className
      * @return ItemMapping
      * @throws \ReflectionException
      */
@@ -39,7 +40,7 @@ class ItemMappingReader
     {
         $classReflection = new ReflectionClass($className);
 
-        /** @var Item $item */
+        /** @var Item|null $item */
         $item = $this->reader->getClassAnnotation($classReflection, Item::class);
         if ($item === null) {
             throw ItemMappingException::notSupported($className);
@@ -138,7 +139,13 @@ class ItemMappingReader
 
             $propertyToCheck = $nestedValueObject->getProperty();
             if (!$nestedValueObjectItemReflection->hasProperty($propertyToCheck)) {
-                throw new ItemMappingException('There is no "%s" property in "%s" class.', $propertyToCheck, $nestedValueObject->getType());
+                throw new ItemMappingException(
+                    sprintf(
+                        'There is no "%s" property in "%s" class.',
+                        $propertyToCheck,
+                        $nestedValueObject->getType()
+                    )
+                );
             }
         }
 

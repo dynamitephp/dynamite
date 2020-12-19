@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class AttributeTest extends TestCase
 {
-    public function testAttributeCreationWillFailOnInvalidType()
+    public function testAttributeCreationWillFailOnInvalidType(): void
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('"tank" is not a valid value for property "type" in "Dynamite\Configuration\Attribute" annotation.');
@@ -18,7 +18,7 @@ class AttributeTest extends TestCase
         new Attribute(['name' => 'field','type' => 'tank']);
     }
 
-    public function testAttributeCreationWillFailOnMissingName()
+    public function testAttributeCreationWillFailOnMissingName(): void
     {
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\AbstractAttribute" annotation.');
@@ -26,7 +26,7 @@ class AttributeTest extends TestCase
         new Attribute(['type' => 'number']);
     }
 
-    public function testAttributeGetters()
+    public function testAttributeGetters(): void
     {
         $attr = new Attribute(['type' => 'number', 'name' => 'userAge']);
         $this->assertEquals('userAge', $attr->getName());

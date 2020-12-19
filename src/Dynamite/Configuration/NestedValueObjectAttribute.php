@@ -33,6 +33,9 @@ class NestedValueObjectAttribute extends AbstractAttribute
         $this->property = $props['property'];
     }
 
+    /**
+     * @return void
+     */
     protected function assertType(string $type)
     {
         if (!class_exists($type)) {

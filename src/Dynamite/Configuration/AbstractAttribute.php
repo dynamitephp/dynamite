@@ -35,8 +35,10 @@ abstract class AbstractAttribute implements AttributeInterface
     /**
      * @param array<string, string> $props
      * @param string[] $requiredProps
+     *
+     * @return void
      */
-    protected function assertPropertiesPresence(array $props, array $requiredProps)
+    protected function assertPropertiesPresence(array $props, array $requiredProps): void
     {
         foreach ($requiredProps as $requiredProp) {
             if (!isset($props[$requiredProp])) {

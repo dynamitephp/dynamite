@@ -10,7 +10,7 @@ class AccessPatternOperation
     private const QUERY = 0x00;
     private int $value;
 
-    public static function query()
+    public static function query(): self
     {
         return new self(self::QUERY);
     }
