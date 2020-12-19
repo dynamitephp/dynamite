@@ -4,9 +4,9 @@ Work with AWS DynamoDB and Single-Table-Designed tables in your apps.
 
 Requires `aws/aws-sdk-php` with `3.*` version. 
 
-## An important things you need to know:
+## Some important things you need to know:
 
-- DynamoDB is not a relational Database.
+- DynamoDB is a NoSQL database and it does not have JOINs. 
 - Dynamite is not an ORM. 
 - Dynamite is just a wrapped DynamoDBClient with some features that i find usable during my adventure with DynamoDB and PHP. 
 - You still need to bring some additional tools like UUID Generator.
