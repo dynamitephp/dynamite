@@ -25,7 +25,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingItemAnnotation()
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('Class "Jadob\Dynamite\Fixtures\Dummy" does not have "Jadob\Dynamite\Configuration\Item" annotation given.');
+        $this->expectExceptionMessage('Class "Dynamite\Tests\Fixtures\Dummy" does not have "Dynamite\Configuration\Item" annotation given.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(Dummy::class);
@@ -34,7 +34,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingPartitionKeyFormatAnnotation()
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no PartitionKeyFormat annotation set in any property of "Jadob\Dynamite\Fixtures\DummyItem" class.');
+        $this->expectExceptionMessage('There is no PartitionKeyFormat annotation set in any property of "Dynamite\Tests\Fixtures\DummyItem" class.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(DummyItem::class);
@@ -43,7 +43,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingPartitionKeyProp()
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no PartitionKey annotation set in any property of "Jadob\Dynamite\Fixtures\DummyItemWithPartitionKeyFormat" class.');
+        $this->expectExceptionMessage('There is no PartitionKey annotation set in any property of "Dynamite\Tests\Fixtures\DummyItemWithPartitionKeyFormat" class.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(DummyItemWithPartitionKeyFormat::class);

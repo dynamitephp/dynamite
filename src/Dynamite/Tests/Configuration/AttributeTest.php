@@ -13,7 +13,7 @@ class AttributeTest extends TestCase
     public function testAttributeCreationWillFailOnInvalidType()
     {
         $this->expectException(ConfigurationException::class);
-        $this->expectExceptionMessage('"tank" is not a valid value for property "type" in "Jadob\Dynamite\Configuration\Attribute" annotation.');
+        $this->expectExceptionMessage('"tank" is not a valid value for property "type" in "Dynamite\Configuration\Attribute" annotation.');
 
         new Attribute(['name' => 'field','type' => 'tank']);
     }
@@ -21,7 +21,7 @@ class AttributeTest extends TestCase
     public function testAttributeCreationWillFailOnMissingName()
     {
         $this->expectException(ConfigurationException::class);
-        $this->expectExceptionMessage('Missing "name" property in "Jadob\Dynamite\Configuration\AbstractAttribute" annotation.');
+        $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\AbstractAttribute" annotation.');
 
         new Attribute(['type' => 'number']);
     }
