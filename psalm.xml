@@ -9,6 +9,7 @@
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="src/Dynamite/Tests/Fixtures" />
         </ignoreFiles>
     </projectFiles>
 </psalm>
