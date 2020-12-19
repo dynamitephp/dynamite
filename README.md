@@ -13,6 +13,7 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - DynamoDB does not have `AUTO_INCREMENT` feature. 
 - Dynamite assumes that there is a table with given name and primary key pair created. 
 - When developing locally, use [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html).
+- **Dynamite Assumes that tables/indexes are created and active.**
 
 ## Documentation
 
