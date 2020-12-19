@@ -14,7 +14,6 @@ use Dynamite\Configuration\PartitionKey;
 use Dynamite\Configuration\PartitionKeyFormat;
 use Dynamite\Configuration\SortKey;
 use Dynamite\Configuration\SortKeyFormat;
-use Dynamite\ItemMapping;
 use ReflectionClass;
 
 /**
