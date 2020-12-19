@@ -77,5 +77,8 @@ jobs:
     - name: Install dependencies
       run: composer update --prefer-${{ matrix.composer-deps }} --prefer-dist --no-interaction
       
+    - name: List installed packages
+      run: composer show
+      
     - name: Run Unit Tests
       run: vendor/bin/phpunit
