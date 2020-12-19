@@ -58,6 +58,7 @@ jobs:
         php-versions: ['7.4','8.0']
         composer-versions:
           - composer:v1
+          - composer:v2
         composer-deps:
           - stable
           - lowest
