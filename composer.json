@@ -1,0 +1,19 @@
+{
+    "name": "dynamite/dynamite",
+    "description": "PHP DynamoDB Mapper",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "doctrine/annotations": "^1",
+        "aws/aws-sdk-php": "^3"
+    },
+    "require-dev": {
+        "vimeo/psalm": "^4.3",
+        "phpunit/phpunit": "^9"
+    },
+    "autoload": {
+        "psr-0" : {
+            "Dynamite\\": "src"
+        }
+    }
+}
