@@ -6,7 +6,7 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 
 ## Some important things you need to know:
 
-- DynamoDB is a NoSQL database and it does not have JOINs. 
+- DynamoDB is a NoSQL database, and it does not have JOINs. 
 - Dynamite is not an ORM. 
 - Dynamite is just a wrapped DynamoDBClient with some features that i find usable during my adventure with DynamoDB and PHP. 
 - You still need to bring some additional tools like UUID Generator.
@@ -14,6 +14,28 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - Dynamite assumes that there is a table with given name and primary key pair created. 
 - When developing locally, use [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html).
 - **Dynamite Assumes that tables/indexes are created and active.**
+
+
+## The unordered roadmap to `v1.0.0`
+- [x] Creating an item
+- [ ] Document how to create an item
+- [x] Storing an item
+- [ ] Document how to store an item
+- [x] Getting item
+- [ ] Document how to get an item
+- [ ] `ItemRepository`
+- [ ] Access Pattern Operations
+- [ ] Bulk operations
+- [ ] Condition Expressions
+- [ ] Unit of Work
+- [ ] Support for all operations in `SingleTableService`
+- [ ] `DynamiteRegistry` to work with more than one table
+- [ ] Psalm pipeline must be green
+- [ ] PHPUnit coverage > 90%
+- [ ] Support for PHP8 Attributes 
+- [ ] `@DenormalizeTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
+
+
 
 ## Documentation
 
@@ -65,9 +87,8 @@ non-nested item when multiple nested) object.
 Nested item cannot have both `@Item` and `@NestedItem` annotation.
 
 
-### Condition expressions
-
-@TODO
+## Ideas for future:
+- `NestedValueObjectAttribute#type should not be required when property is defined`
 
 ## License 
 
