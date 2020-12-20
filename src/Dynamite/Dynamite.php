@@ -54,6 +54,7 @@ class Dynamite
         LoggerInterface $logger,
         Reader $annotationReader,
         TableConfiguration $tableConfiguration,
+        array $managedObjects,
         ?Marshaler $marshaler = null
     )
     {
@@ -61,6 +62,7 @@ class Dynamite
         $this->logger = $logger;
         $this->annotationReader = $annotationReader;
         $this->tableConfiguration = $tableConfiguration;
+        $this->managedObjects = $managedObjects;
         $this->marshaler = $marshaler ?? new Marshaler();
         $this->itemMappingReader = new ItemMappingReader($this->annotationReader);
         $this->itemSerializer = new ItemSerializer($this->annotationReader);
