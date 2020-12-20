@@ -34,7 +34,7 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - [ ] PHPUnit coverage > 90%
 - [ ] Support for PHP8 Attributes 
 - [ ] `@DenormalizeTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
-
+- [ ] Some Console commands for Items mapping validation and project maintenance
 
 
 ## Documentation
