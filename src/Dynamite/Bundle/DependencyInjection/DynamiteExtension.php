@@ -54,11 +54,13 @@ class DynamiteExtension extends Extension
             $instanceDefinition->setArgument('$client', new Reference($instanceConfiguration['connection']));
             $instanceDefinition->setArgument('$logger', new Reference(sprintf('dynamite.logger.%s', $instanceName)));
             $instanceDefinition->setArgument('$annotationReader', $annotationReaderRef);
+            $instanceDefinition->setArgument('$managedObjects', $instanceConfiguration['managed_items']);
             $instanceDefinition->setPublic(true);
             $instanceDefinition->setArgument('$tableConfiguration', new Reference($tableConfigurationId));
 
+            $container->setDefinition(Dynamite::class, $instanceDefinition);
+            $container->setAlias(sprintf(self::INSTANCE_ID, $instanceName), Dynamite::class);
 
-            $container->setDefinition(sprintf(self::INSTANCE_ID, $instanceName), $instanceDefinition);
             $registryDefinition->addMethodCall('addManagedTable', [$instanceName, $instanceDefinition]);
         }
         $container->setDefinition('dynamite.registry', $registryDefinition);
