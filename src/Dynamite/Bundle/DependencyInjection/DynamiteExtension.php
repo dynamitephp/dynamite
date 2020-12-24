@@ -46,6 +46,7 @@ class DynamiteExtension extends Extension
             $tableConfigurationDefinition->setArgument('$tableName', $instanceConfiguration['table_name']);
             $tableConfigurationDefinition->setArgument('$partitionKeyName', $instanceConfiguration['partition_key_name']);
             $tableConfigurationDefinition->setArgument('$sortKeyName', $instanceConfiguration['sort_key_name']);
+            $tableConfigurationDefinition->setArgument('$indexes', $instanceConfiguration['indexes']);
             $tableConfigurationDefinition->setPrivate(true);
             $container->setDefinition($tableConfigurationId, $tableConfigurationDefinition);
 
