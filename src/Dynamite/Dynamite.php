@@ -79,6 +79,10 @@ class Dynamite
      */
     public function getItemRepository(string $itemClass): ItemRepository
     {
+        if(!in_array($itemClass,$this->managedObjects,  true)) {
+            throw ItemRepositoryException::objectNotManaged($itemClass);
+        }
+
         if (!isset($this->itemMappings[$itemClass])) {
             $this->itemMappings[$itemClass] = $this->itemMappingReader->getMappingFor($itemClass);
         }
