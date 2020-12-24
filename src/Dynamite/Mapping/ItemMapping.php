@@ -55,7 +55,8 @@ class ItemMapping
     }
 
     /**
-     * @return array<string,AttributeInterface>
+     * @return AttributeInterface[]
+     * @psalm-return array<string,AttributeInterface>
      */
     public function getPropertiesMapping(): array
     {
