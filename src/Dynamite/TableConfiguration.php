@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Dynamite;
 
+use Dynamite\Exception\DynamiteException;
+
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
@@ -53,8 +55,8 @@ class TableConfiguration
 
     public function getIndexPrimaryKeyPair(string $indexName): array
     {
-        if(!isset($this->indexes[$indexName])) {
-            throw new \Exception('Index with name "%s" not found in table configuration');
+        if (!isset($this->indexes[$indexName])) {
+            throw new DynamiteException(sprintf('Index with name "%s" not found in table configuration', $indexName));
         }
 
         return [
