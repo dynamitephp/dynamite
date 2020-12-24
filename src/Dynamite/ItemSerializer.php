@@ -28,12 +28,13 @@ class ItemSerializer
         $values = [];
         $reflectionClass = new ReflectionClass($item);
         foreach ($itemMapping->getPropertiesMapping() as $propertyName => $attribute) {
+            $attrName = $attribute->getName();
             $propertyReflection = $reflectionClass->getProperty($propertyName);
             $propertyReflection->setAccessible(true);
             $propertyValue = $propertyReflection->getValue($item);
 
             if ($attribute instanceof Attribute) {
-                $values[$propertyName] = $propertyValue;
+                $values[$attrName] = $propertyValue;
                 continue;
             }
 
@@ -42,7 +43,7 @@ class ItemSerializer
                 $valueObjectPropertyReflection = $valueObjectReflection->getProperty($attribute->getProperty());
                 $valueObjectPropertyReflection->setAccessible(true);
 
-                $values[$propertyName] = $valueObjectPropertyReflection->getValue($propertyValue);
+                $values[$attrName] = $valueObjectPropertyReflection->getValue($propertyValue);
                 continue;
             }
 
@@ -52,7 +53,7 @@ class ItemSerializer
                 $nestedItemConfiguration = $this->reader->getClassAnnotation($nestedItemReflection, NestedItem::class);
                 $serializeMethod = $nestedItemConfiguration->getSerializeMethod();
                 if ($serializeMethod !== null) {
-                    $values[$propertyName] = $propertyValue->$serializeMethod();
+                    $values[$attrName] = $propertyValue->$serializeMethod();
                     continue;
                 }
 
