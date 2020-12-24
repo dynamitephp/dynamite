@@ -99,7 +99,7 @@ class ItemRepository
         throw new \Exception('access pattern not found');
     }
 
-    public function store(object $item): void
+    public function put(object $item): void
     {
         if (!($item instanceof $this->itemName)) {
             throw ItemRepositoryException::objectNotSupported(get_class($item), $this->itemName);
