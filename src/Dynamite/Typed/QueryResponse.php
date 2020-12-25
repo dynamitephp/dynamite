@@ -32,4 +32,21 @@ class QueryResponse
         $this->marshaler = $marshaler ?? new Marshaler();
     }
 
+    /**
+     * Returns marshaled items.
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLastEvaluatedKey()
+    {
+        return $this->lastEvaluatedKey;
+    }
+
+
 }
