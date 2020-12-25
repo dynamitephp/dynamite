@@ -76,4 +76,9 @@ class SingleTableService
         return new QueryResponse($response, $this->marshaler);
     }
 
+
+    public function unmarshalItem(array $item): array
+    {
+        return $this->marshaler->unmarshalItem($item);
+    }
 }
