@@ -5,6 +5,7 @@ namespace Dynamite;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
+use Dynamite\Typed\QueryResponse;
 
 /**
  * A wrapper for DynamoDbClient which knows your table configuration so you do not have to inject them anywhere.
@@ -46,7 +47,7 @@ class SingleTableService
      *
      * @psalm-return list<\stdClass|array>
      */
-    public function simpleQuery(string $pk, ?string $sk = null, ?string $index = null): array
+    public function simpleQuery(string $pk, ?string $sk = null, ?string $index = null): QueryResponse
     {
         $partitionKeyAttr = $this->table->getPartitionKeyName();
         $sortKeyAttr = $this->table->getSortKeyName();
@@ -71,14 +72,8 @@ class SingleTableService
         }
 
         /** @psalm-var array<array-key, mixed> $items */
-        $items = $this->client->query($queryRequest)->toArray()['Items'];
-        $output = [];
-
-        foreach ($items as $item) {
-            $output[] = $this->marshaler->unmarshalItem($item);
-        }
-
-        return $output;
+        $response = $this->client->query($queryRequest)->toArray();
+        return new QueryResponse($response, $this->marshaler);
     }
 
 }
