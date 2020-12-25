@@ -70,7 +70,7 @@ class ItemRepository
     /**
      * @param string $patternName
      * @param array $arguments
-     * @return object|object[]
+     * @return object|object[]|QueryIterator
      * @throws \Exception
      */
     public function executeAccessPattern(string $patternName, array $arguments = [])
@@ -78,18 +78,23 @@ class ItemRepository
         foreach ($this->accessPatterns as $accessPattern) {
             if ($accessPattern->getName() === $patternName) {
                 if ($accessPattern->getOperation()->isQuery()) {
-                    $queryResult = $this->singleTableService->simpleQuery(
+                    $queryResponse = $this->singleTableService->simpleQuery(
                         $accessPattern->getPartitionKeyFormat(),
                         $accessPattern->getSortKeyFormat(),
                         $accessPattern->getIndex()
                     );
 
+                    $items = $queryResponse->getItems();
                     $output = [];
-                    foreach ($queryResult as $item) {
-                        $output[] = $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $item);
+                    foreach ($items as $item) {
+                        $unmarshaledItem = $this->singleTableService->unmarshalItem($item);
+                        $output[] = $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $unmarshaledItem);
                     }
 
-                    return $output;
+                    return new QueryIterator(
+                        $output,
+                        $queryResponse->getLastEvaluatedKey()
+                    );
                 }
 
                 throw new \Exception('access pattern operation not implemented yet');
