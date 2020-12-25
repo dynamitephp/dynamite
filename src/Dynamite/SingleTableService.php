@@ -85,6 +85,8 @@ class SingleTableService
 
     public function rawQuery(QueryRequest $request): QueryResponse
     {
+        $request->withTableName($this->table->getTableName());
+
         return new QueryResponse(
             $this->client->query($request->toArray())->toArray(),
             $this->marshaler
