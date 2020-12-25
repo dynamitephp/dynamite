@@ -92,4 +92,9 @@ class SingleTableService
             $this->marshaler
         );
     }
+
+    public function getTableConfiguration(): TableConfiguration
+    {
+        return $this->table;
+    }
 }
