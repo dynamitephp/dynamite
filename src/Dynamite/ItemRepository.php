@@ -7,6 +7,7 @@ use Dynamite\Exception\DynamiteException;
 use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
 use Dynamite\Repository\AccessPatternsProviderInterface;
+use Dynamite\Typed\QueryRequest;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -69,35 +70,55 @@ class ItemRepository
 
     /**
      * @param string $patternName
-     * @param array $arguments
+     * @param int|null $limit
+     * @param array|null $lastEvaluatedKey
      * @return object|object[]|QueryIterator
      * @throws \Exception
      */
-    public function executeAccessPattern(string $patternName, array $arguments = [])
+    public function executeAccessPattern(string $patternName, ?int $limit = null, ?array $lastEvaluatedKey = null)
     {
         foreach ($this->accessPatterns as $accessPattern) {
             if ($accessPattern->getName() === $patternName) {
-                if ($accessPattern->getOperation()->isQuery()) {
-                    $queryResponse = $this->singleTableService->simpleQuery(
-                        $accessPattern->getPartitionKeyFormat(),
-                        $accessPattern->getSortKeyFormat(),
-                        $accessPattern->getIndex()
-                    );
+                $request = new QueryRequest();
 
-                    $items = $queryResponse->getItems();
-                    $output = [];
-                    foreach ($items as $item) {
-                        $unmarshaledItem = $this->singleTableService->unmarshalItem($item);
-                        $output[] = $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $unmarshaledItem);
-                    }
-
-                    return new QueryIterator(
-                        $output,
-                        $queryResponse->getLastEvaluatedKey()
-                    );
+                if($limit !== null) {
+                    $request->withLimit($limit);
                 }
 
-                throw new \Exception('access pattern operation not implemented yet');
+                if($lastEvaluatedKey !== null) {
+                    $request->withExclusiveStartKey($lastEvaluatedKey);
+                }
+
+
+                $request
+                    ->withKeyConditionExpression('#pk = :pk')
+                    ->withExpressionAttributeName(
+                        '#pk',
+                        $this->singleTableService->getTableConfiguration()->getPartitionKeyName()
+                    )
+                    ->withExpressionAttributeValue(
+                        ':pk',
+                        $accessPattern->getPartitionKeyFormat()
+                    );
+
+                if($accessPattern->getIndex() !== null) {
+                    $indexPrimaryKeyPair =
+                        $this->singleTableService
+                            ->getTableConfiguration()
+                            ->getIndexPrimaryKeyPair(
+                                $accessPattern->getIndex()
+                            );
+
+                    $request
+                        ->withIndexName($accessPattern->getIndex())
+                        ->withExpressionAttributeName(
+                            '#pk',
+                            $indexPrimaryKeyPair[0]
+                        );
+
+                }
+
+                return $this->query($request);
             }
         }
 
@@ -150,8 +171,22 @@ class ItemRepository
             $serializedValues,
             $sortKeyValue
         );
-
-
     }
 
+
+    public function query(QueryRequest $request): QueryIterator
+    {
+        $response = $this->singleTableService->rawQuery($request);
+        $items = $response->getItems();
+        $output = [];
+        foreach ($items as $item) {
+            $unmarshaledItem = $this->singleTableService->unmarshalItem($item);
+            $output[] = $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $unmarshaledItem);
+        }
+
+        return new QueryIterator(
+            $output,
+            $response->getLastEvaluatedKey()
+        );
+    }
 }
