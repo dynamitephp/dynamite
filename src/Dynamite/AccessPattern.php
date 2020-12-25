@@ -14,6 +14,7 @@ class AccessPattern
     protected string $partitionKeyFormat;
     protected ?string $sortKeyFormat = null;
     protected AccessPatternOperation $operation;
+    protected ?int $limit = null;
 
 
     protected function __construct(string $name)
@@ -67,6 +68,13 @@ class AccessPattern
         return $self;
     }
 
+    public function withLimit(int $limit)
+    {
+        $self = clone $this;
+        $self->limit = $limit;
+        return $limit;
+    }
+
     /**
      * @return string
      */
@@ -105,6 +113,14 @@ class AccessPattern
     public function getOperation(): AccessPatternOperation
     {
         return $this->operation;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLimit(): ?int
+    {
+        return $this->limit;
     }
 
 
