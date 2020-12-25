@@ -5,6 +5,7 @@ namespace Dynamite;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
+use Dynamite\Typed\QueryRequest;
 use Dynamite\Typed\QueryResponse;
 
 /**
@@ -80,5 +81,13 @@ class SingleTableService
     public function unmarshalItem(array $item): array
     {
         return $this->marshaler->unmarshalItem($item);
+    }
+
+    public function rawQuery(QueryRequest $request): QueryResponse
+    {
+        return new QueryResponse(
+            $this->client->query($request->toArray())->toArray(),
+            $this->marshaler
+        );
     }
 }
