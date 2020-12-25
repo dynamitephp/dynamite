@@ -13,7 +13,6 @@ class AccessPattern
     protected ?string $index = null;
     protected string $partitionKeyFormat;
     protected ?string $sortKeyFormat = null;
-    protected AccessPatternOperation $operation;
     protected ?int $limit = null;
 
 
@@ -58,15 +57,6 @@ class AccessPattern
         return $self;
     }
 
-    /**
-     * @return static
-     */
-    public function withOperation(AccessPatternOperation $operation): self
-    {
-        $self = clone $this;
-        $self->operation = $operation;
-        return $self;
-    }
 
     public function withLimit(int $limit)
     {
@@ -105,14 +95,6 @@ class AccessPattern
     public function getSortKeyFormat(): ?string
     {
         return $this->sortKeyFormat;
-    }
-
-    /**
-     * @return AccessPatternOperation
-     */
-    public function getOperation(): AccessPatternOperation
-    {
-        return $this->operation;
     }
 
     /**
