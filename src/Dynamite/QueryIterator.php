@@ -28,4 +28,13 @@ class QueryIterator implements Countable, IteratorAggregate
     {
         return count($this->items);
     }
+
+    /**
+     * @return array|null
+     */
+    public function getLastEvaluatedKey(): ?array
+    {
+        return $this->lastEvaluatedKey;
+    }
+
 }
