@@ -86,17 +86,6 @@ class ItemRepository
         return $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $item);
     }
 
-    public function queryItem($partitionKey, $sortKey, ?string $indexName = null): object
-    {
-        throw new \Exception('not implemented yet');
-    }
-
-    public function getQueryBuilder(): void
-    {
-        throw new \Exception('not implemented yet');
-
-    }
-
     /**
      * @param string $patternName
      * @param int|null $limit
