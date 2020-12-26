@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dynamite;
 
 use Dynamite\Exception\DynamiteException;
+use Dynamite\Exception\ItemNotFoundException;
 use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
 use Dynamite\Repository\AccessPatternsProviderInterface;
@@ -74,6 +75,13 @@ class ItemRepository
         }
 
         $item = $this->singleTableService->getItem($partitionKey, $sortKey);
+
+        if($item === null) {
+            throw new ItemNotFoundException(
+                sprintf('Could not find item with PK "%s" and SK "%s"', $partitionKey, $sortKey)
+            );
+        }
+
         return $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $item);
     }
 
