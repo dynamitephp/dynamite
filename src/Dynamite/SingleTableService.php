@@ -99,7 +99,7 @@ class SingleTableService
     }
 
 
-    public function getItem(string $pk, ?string $sk = null)
+    public function getItem(string $pk, ?string $sk = null): ?array
     {
         $key = [
             $this->getTableConfiguration()->getPartitionKeyName() => $this->marshaler->marshalValue($pk)
@@ -116,6 +116,9 @@ class SingleTableService
 
         $result = $this->client->getItem($request)->toArray();
 
+        if(!isset($result['Item'])) {
+            return null;
+        }
         return $this->unmarshalItem($result['Item']);
     }
 }
