@@ -51,6 +51,7 @@ class ItemRepository
      *
      * @param array<string, string>|string $partitionKey
      * @param array<string, string>|string $sortKey
+     * @throws ItemNotFoundException
      * @return object
      */
     public function getItem($partitionKey, $sortKey = null): object
