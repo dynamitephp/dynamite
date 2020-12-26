@@ -97,4 +97,24 @@ class SingleTableService
     {
         return $this->table;
     }
+
+
+    public function getItem(string $pk, ?string $sk = null)
+    {
+        $key = [
+            $this->getTableConfiguration()->getPartitionKeyName() => $this->marshaler->marshalValue($pk)
+        ];
+
+        if($sk !== null) {
+            $key[$this->getTableConfiguration()->getSortKeyName()] = $this->marshaler->marshalValue($sk);
+        }
+
+        $request = [
+            'TableName' => $this->getTableConfiguration()->getTableName(),
+            'Key' => $key
+        ];
+
+        $result = $this->client->getItem($request)->toArray();
+        return $result['Item'];
+    }
 }
