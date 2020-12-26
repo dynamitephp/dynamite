@@ -52,9 +52,29 @@ class ItemRepository
      * @param array<string, string>|string $sortKey
      * @return object
      */
-    public function getItem($partitionKey, $sortKey): object
+    public function getItem($partitionKey, $sortKey = null): object
     {
-        throw new \Exception('not implemented yet');
+        if (is_array($partitionKey)) {
+            $pkFormat = $this->itemMapping->getPartitionKeyFormat();
+            $pkPlaceholders = [];
+
+            foreach ($partitionKey as $key => $val) {
+                $pkPlaceholders[sprintf('{%s}', $key)] = $val;
+            }
+
+            $partitionKey = str_replace(
+                array_keys($pkPlaceholders),
+                array_values($pkPlaceholders),
+                $pkFormat
+            );
+        }
+
+        if ($sortKey === null) {
+            $sortKey = $this->itemMapping->getSortKeyFormat();
+        }
+
+        $item = $this->singleTableService->getItem($partitionKey, $sortKey);
+        return $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $item);
     }
 
     public function queryItem($partitionKey, $sortKey, ?string $indexName = null): object
@@ -81,11 +101,11 @@ class ItemRepository
             if ($accessPattern->getName() === $patternName) {
                 $request = new QueryRequest();
 
-                if($limit !== null) {
+                if ($limit !== null) {
                     $request->withLimit($limit);
                 }
 
-                if($lastEvaluatedKey !== null) {
+                if ($lastEvaluatedKey !== null) {
                     $request->withExclusiveStartKey($lastEvaluatedKey);
                 }
 
@@ -101,7 +121,7 @@ class ItemRepository
                         $accessPattern->getPartitionKeyFormat()
                     );
 
-                if($accessPattern->getIndex() !== null) {
+                if ($accessPattern->getIndex() !== null) {
                     $indexPrimaryKeyPair =
                         $this->singleTableService
                             ->getTableConfiguration()
