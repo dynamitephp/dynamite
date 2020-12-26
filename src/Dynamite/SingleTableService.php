@@ -115,6 +115,7 @@ class SingleTableService
         ];
 
         $result = $this->client->getItem($request)->toArray();
-        return $result['Item'];
+
+        return $this->unmarshalItem($result['Item']);
     }
 }
