@@ -47,9 +47,6 @@ class AccessPattern
         return $self;
     }
 
-    /**
-     * @return static
-     */
     public function withSortKeyFormat(string $sk): self
     {
         $self = clone $this;
@@ -58,11 +55,11 @@ class AccessPattern
     }
 
 
-    public function withLimit(int $limit)
+    public function withLimit(int $limit): self
     {
         $self = clone $this;
         $self->limit = $limit;
-        return $limit;
+        return $self;
     }
 
     /**
