@@ -5,6 +5,7 @@ namespace Dynamite\Mapping;
 
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
@@ -12,6 +13,7 @@ use Dynamite\Fixtures\DummyItemWithInvalidPropNameInNestedVO;
 use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
 use Dynamite\Fixtures\Valid\ExchangeRate;
+use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\UserActivity;
 use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
 use PHPUnit\Framework\TestCase;
@@ -110,6 +112,13 @@ class ItemMappingReaderTest extends TestCase
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(DummyItemWithInvalidPropNameInNestedVO::class);
 
+    }
 
+    public function testMappingNestedItemAttribute()
+    {
+        $parser = $this->createItemMappingReader();
+        $mapping = $parser->getMappingFor(Product::class);
+
+        $this->assertInstanceOf(NestedItemAttribute::class, $mapping->getPropertiesMapping()['nutritionFacts']);
     }
 }
