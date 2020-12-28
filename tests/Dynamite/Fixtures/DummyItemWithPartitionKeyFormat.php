@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dynamite\Tests\Fixtures;
+namespace Dynamite\Fixtures;
 
 use Dynamite\Configuration as Dynamite;
 

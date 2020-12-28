@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dynamite\Tests\Configuration;
+namespace Dynamite\Configuration;
 
 
 use Dynamite\Configuration\Attribute;

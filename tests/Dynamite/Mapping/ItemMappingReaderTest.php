@@ -1,16 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Dynamite\Tests\Mapping;
+namespace Dynamite\Mapping;
 
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Dynamite\Mapping\ItemMappingException;
-use Dynamite\Mapping\ItemMappingReader;
-use Dynamite\Tests\Fixtures\Dummy;
-use Dynamite\Tests\Fixtures\DummyItem;
-use Dynamite\Tests\Fixtures\DummyItemWithPartitionKeyFormat;
-use Dynamite\Tests\Fixtures\Valid\UserActivity;
+use Dynamite\Fixtures\Dummy;
+use Dynamite\Fixtures\DummyItem;
+use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
+use Dynamite\Fixtures\Valid\UserActivity;
 use PHPUnit\Framework\TestCase;
 
 class ItemMappingReaderTest extends TestCase
@@ -25,7 +23,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingItemAnnotation(): void
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('Class "Dynamite\Tests\Fixtures\Dummy" does not have "Dynamite\Configuration\Item" annotation given.');
+        $this->expectExceptionMessage('Class "Dynamite\Fixtures\Dummy" does not have "Dynamite\Configuration\Item" annotation given.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(Dummy::class);
@@ -34,7 +32,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingPartitionKeyFormatAnnotation(): void
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no PartitionKeyFormat annotation set in any property of "Dynamite\Tests\Fixtures\DummyItem" class.');
+        $this->expectExceptionMessage('There is no PartitionKeyFormat annotation set in any property of "Dynamite\Fixtures\DummyItem" class.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(DummyItem::class);
@@ -43,7 +41,7 @@ class ItemMappingReaderTest extends TestCase
     public function testCheckingForMissingPartitionKeyProp(): void
     {
         $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no PartitionKey annotation set in any property of "Dynamite\Tests\Fixtures\DummyItemWithPartitionKeyFormat" class.');
+        $this->expectExceptionMessage('There is no PartitionKey annotation set in any property of "Dynamite\Fixtures\DummyItemWithPartitionKeyFormat" class.');
 
         $parser = $this->createItemMappingReader();
         $parser->getMappingFor(DummyItemWithPartitionKeyFormat::class);

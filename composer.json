@@ -15,5 +15,10 @@
         "psr-0" : {
             "Dynamite\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Dynamite\\": "tests"
+        }
     }
 }
