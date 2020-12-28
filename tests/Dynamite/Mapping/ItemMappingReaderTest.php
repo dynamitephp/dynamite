@@ -4,28 +4,23 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
 use Dynamite\Fixtures\DummyItemWithInvalidPropNameInNestedVO;
 use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
+use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
 use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\UserActivity;
-use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
+use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\TestCase;
 
 class ItemMappingReaderTest extends TestCase
 {
-
-    private function createItemMappingReader(): ItemMappingReader
-    {
-        return new ItemMappingReader(new AnnotationReader());
-    }
-
+    use DynamiteTestSuiteHelperTrait;
 
     public function testCheckingForMissingItemAnnotation(): void
     {
