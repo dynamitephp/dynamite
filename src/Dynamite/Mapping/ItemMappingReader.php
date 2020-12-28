@@ -139,13 +139,7 @@ class ItemMappingReader
 
             $propertyToCheck = $nestedValueObject->getProperty();
             if (!$nestedValueObjectItemReflection->hasProperty($propertyToCheck)) {
-                throw new ItemMappingException(
-                    sprintf(
-                        'There is no "%s" property in "%s" class.',
-                        $propertyToCheck,
-                        $nestedValueObject->getType()
-                    )
-                );
+                throw ItemMappingException::noPropertyInClass($propertyToCheck, $nestedValueObject->getType());
             }
         }
 

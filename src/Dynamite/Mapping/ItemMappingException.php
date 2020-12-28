@@ -38,4 +38,9 @@ class ItemMappingException extends DynamiteException
         return new self(sprintf('There is no PartitionKeyFormat annotation set in any property of "%s" class.', $className));
     }
 
+    public static function noPropertyInClass(string $propName, string $fqcn): self
+    {
+        return new self(sprintf('There is no "%s" property in "%s" class.', $propName, $fqcn));
+    }
+
 }
