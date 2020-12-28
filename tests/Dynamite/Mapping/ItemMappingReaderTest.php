@@ -5,10 +5,15 @@ namespace Dynamite\Mapping;
 
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
+use Dynamite\Fixtures\DummyItemWithInvalidPropNameInNestedVO;
+use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
+use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\UserActivity;
+use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
 use PHPUnit\Framework\TestCase;
 
 class ItemMappingReaderTest extends TestCase
@@ -66,5 +71,45 @@ class ItemMappingReaderTest extends TestCase
         $mapping = $parser->getMappingFor(UserActivity::class);
 
         $this->assertEquals('USERACTIVITY', $mapping->getObjectType());
+    }
+
+    public function testBreakingWhenMoreThanOneSortKeyFound()
+    {
+        $this->expectException(ItemMappingException::class);
+        $this->expectExceptionMessage('Found two SortKey annotations (properties: "sk1", "sk2") in "Dynamite\Fixtures\DummyItemWithMultipleSortKeys" class.');
+
+        $parser = $this->createItemMappingReader();
+        $parser->getMappingFor(DummyItemWithMultipleSortKeys::class);
+    }
+
+    public function testBreakingWhenMoreThanOnePartitionKeyFound()
+    {
+        $this->expectException(ItemMappingException::class);
+        $this->expectExceptionMessage('Found two PartitionKey annotations (properties: "pk1", "pk2") in "Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys" class.');
+
+        $parser = $this->createItemMappingReader();
+        $parser->getMappingFor(DummyItemWithMultiplePartitionKeys::class);
+    }
+
+    public function testMappingNestedValueObjectAttribute()
+    {
+        $parser = $this->createItemMappingReader();
+
+        $mapping = $parser->getMappingFor(ExchangeRate::class);
+
+        $this->assertInstanceOf(NestedValueObjectAttribute::class, $mapping->getPropertiesMapping()['from']);
+        $this->assertInstanceOf(NestedValueObjectAttribute::class, $mapping->getPropertiesMapping()['to']);
+
+    }
+
+    public function testMappingNestedValueObjectAttributeWillBreakWhenInvalidPropPassed()
+    {
+        $this->expectException(ItemMappingException::class);
+        $this->expectExceptionMessage('There is no "weather" property in "\Dynamite\Fixtures\Valid\CurrencyNestedValueObject" class.');
+
+        $parser = $this->createItemMappingReader();
+        $parser->getMappingFor(DummyItemWithInvalidPropNameInNestedVO::class);
+
+
     }
 }
