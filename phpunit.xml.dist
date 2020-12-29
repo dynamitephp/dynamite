@@ -7,7 +7,7 @@
   </php>
   <testsuites>
     <testsuite name="Dynamite Unit Tests">
-      <directory>src/Dynamite/Tests</directory>
+      <directory>tests</directory>
     </testsuite>
   </testsuites>
 </phpunit>
