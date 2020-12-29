@@ -48,9 +48,7 @@ class ItemSerializer
             }
 
             if ($attribute instanceof NestedItemAttribute) {
-                $nestedItemReflection = new ReflectionClass($attribute->getType());
-                /** @var NestedItem $nestedItemConfiguration */
-                $nestedItemConfiguration = $this->reader->getClassAnnotation($nestedItemReflection, NestedItem::class);
+                $nestedItemConfiguration = $itemMapping->getNestedItems()[$propertyName];
                 $serializeMethod = $nestedItemConfiguration->getSerializeMethod();
                 if ($serializeMethod !== null) {
                     $values[$attrName] = $propertyValue->$serializeMethod();

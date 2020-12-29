@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 
+use Dynamite\Configuration\NestedItem;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
+use Dynamite\Fixtures\DummyItemWithInvalidNestedItemReference;
 use Dynamite\Fixtures\DummyItemWithInvalidPropNameInNestedVO;
 use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
 use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
@@ -115,5 +117,17 @@ class ItemMappingReaderTest extends TestCase
         $mapping = $parser->getMappingFor(Product::class);
 
         $this->assertInstanceOf(NestedItemAttribute::class, $mapping->getPropertiesMapping()['nutritionFacts']);
+        $this->assertInstanceOf(NestedItem::class, $mapping->getNestedItems()['nutritionFacts']);
+    }
+
+    public function testMappingNestedItemAttributeWithMissingAnnotationInReferencedObject()
+    {
+
+        $this->expectException(ItemMappingException::class);
+        $this->expectExceptionMessage('There is no NestedItem annotation on "\Dynamite\Fixtures\NestedItemWithoutAnnotation" class.');
+
+        $parser = $this->createItemMappingReader();
+        $parser->getMappingFor(DummyItemWithInvalidNestedItemReference::class);
+
     }
 }

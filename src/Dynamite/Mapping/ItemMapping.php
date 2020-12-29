@@ -5,6 +5,7 @@ namespace Dynamite\Mapping;
 
 use Dynamite\Configuration\AttributeInterface;
 use Dynamite\Configuration\Item;
+use Dynamite\Configuration\NestedItem;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -20,17 +21,24 @@ class ItemMapping
      */
     private array $propertiesMapping;
 
+    /**
+     * @var array<string, NestedItem>
+     */
+    private array $nestedItems;
+
     public function __construct(
         Item $item,
         Key $partitionKey,
         array $propertiesMapping,
-        ?Key $sortKey = null
+        ?Key $sortKey = null,
+        array $nestedItems = []
     )
     {
         $this->item = $item;
         $this->partitionKey = $partitionKey;
         $this->propertiesMapping = $propertiesMapping;
         $this->sortKey = $sortKey;
+        $this->nestedItems = $nestedItems;
     }
 
     public function getObjectType(): string
@@ -86,4 +94,8 @@ class ItemMapping
         return $this->sortKey->getProperty();
     }
 
+    public function getNestedItems(): array
+    {
+        return $this->nestedItems;
+    }
 }

@@ -43,4 +43,9 @@ class ItemMappingException extends DynamiteException
         return new self(sprintf('There is no "%s" property in "%s" class.', $propName, $fqcn));
     }
 
+    public static function missingNestemItemAnnotationOnReferencedObject(string $fqcn)
+    {
+        return new self(sprintf('There is no NestedItem annotation on "%s" class.', $fqcn));
+    }
+
 }

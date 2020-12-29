@@ -8,12 +8,14 @@ use Doctrine\Common\Annotations\Reader;
 use Dynamite\Configuration\Attribute;
 use Dynamite\Configuration\AttributeInterface;
 use Dynamite\Configuration\Item;
+use Dynamite\Configuration\NestedItem;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Configuration\PartitionKey;
 use Dynamite\Configuration\PartitionKeyFormat;
 use Dynamite\Configuration\SortKey;
 use Dynamite\Configuration\SortKeyFormat;
+use Dynamite\Exception\DynamiteException;
 use ReflectionClass;
 
 /**
@@ -65,6 +67,7 @@ class ItemMappingReader
          * Values => Attribute class
          */
         $attributesMapping = [];
+        $nestedItems = [];
         $partitionKeyAttr = null;
         $sortKeyAttr = null;
 
@@ -75,6 +78,22 @@ class ItemMappingReader
             $attribute = $this->findAttributeType($propertyReflection);
             if ($attribute !== null) {
                 $attributesMapping[$propertyName] = $attribute;
+
+                if ($attribute instanceof NestedItemAttribute) {
+                    $nestedItemReflection = new ReflectionClass($attribute->getType());
+                    /** @var NestedItem|null $nestedItemConfiguration */
+                    $nestedItemConfiguration = $this->reader->getClassAnnotation($nestedItemReflection, NestedItem::class);
+                    if ($nestedItemConfiguration === null) {
+                        throw ItemMappingException::missingNestemItemAnnotationOnReferencedObject($attribute->getType());
+                    }
+
+                    $nestedItems[$propertyName] = $nestedItemConfiguration;
+                }
+
+                /**
+                 * continue to next parameter, as property with any Attribute annotation
+                 * cannot have nor partition key or sort key defined
+                 */
                 continue;
             }
 
@@ -106,7 +125,8 @@ class ItemMappingReader
             $item,
             new Key($partitionKeyFormat->getValue(), $partitionKeyAttr),
             $attributesMapping,
-            ($sortKeyAttr !== null && $sortKeyFormat !== null ? new Key($sortKeyFormat, $sortKeyAttr) : null)
+            ($sortKeyAttr !== null && $sortKeyFormat !== null ? new Key($sortKeyFormat, $sortKeyAttr) : null),
+            $nestedItems
         );
 
     }
