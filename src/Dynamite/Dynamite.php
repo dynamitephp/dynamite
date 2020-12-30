@@ -55,7 +55,8 @@ class Dynamite
         Reader $annotationReader,
         TableConfiguration $tableConfiguration,
         array $managedObjects,
-        ?Marshaler $marshaler = null
+        ?Marshaler $marshaler = null,
+        ItemMappingReader $mappingReader = null
     )
     {
         $this->client = $client;
@@ -64,7 +65,7 @@ class Dynamite
         $this->tableConfiguration = $tableConfiguration;
         $this->managedObjects = $managedObjects;
         $this->marshaler = $marshaler ?? new Marshaler();
-        $this->itemMappingReader = new ItemMappingReader($this->annotationReader);
+        $this->itemMappingReader = $mappingReader ?? new ItemMappingReader($this->annotationReader);
         $this->itemSerializer = new ItemSerializer($this->annotationReader);
         $this->singleTableService = new SingleTableService(
             $this->client,
@@ -79,7 +80,7 @@ class Dynamite
      */
     public function getItemRepository(string $itemClass): ItemRepository
     {
-        if(!in_array($itemClass,$this->managedObjects,  true)) {
+        if (!$this->manages($itemClass)) {
             throw ItemRepositoryException::objectNotManaged($itemClass);
         }
 
@@ -119,5 +120,10 @@ class Dynamite
     public function getSingleTableService(): SingleTableService
     {
         return $this->singleTableService;
+    }
+
+    public function manages(string $objectFqcn): bool
+    {
+        return in_array($objectFqcn, $this->managedObjects, true);
     }
 }
