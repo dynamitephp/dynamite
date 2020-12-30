@@ -20,5 +20,8 @@
         "psr-0": {
             "Dynamite\\": "tests"
         }
+    },
+    "suggest": {
+        "symfony/cache": "With v5.0 at least to use CachedItemMappingReader"
     }
 }
