@@ -23,9 +23,9 @@ class Attribute extends AbstractAttribute
     {
         $allowedValues = [
             'string',
-            //'string[]',
+            'string[]',
             'number',
-            //'number[]',
+            'number[]',
             'bool'
         ];
 
