@@ -16,6 +16,15 @@ use Dynamite\Exception\ConfigurationException;
  */
 class Attribute extends AbstractAttribute
 {
+    public const TYPE_TIMESTAMP = 'timestamp';
+    public const TYPE_DATETIME = 'datetime';
+
+    /**
+     * DateTime#format() syntax applies here.
+     * @var string
+     */
+    protected string $format = 'U';
+
     /**
      * @return void
      */
@@ -26,11 +35,46 @@ class Attribute extends AbstractAttribute
             'string[]',
             'number',
             'number[]',
-            'bool'
+            'bool',
+            self::TYPE_TIMESTAMP,
+            self::TYPE_DATETIME
         ];
 
         if (!in_array($type, $allowedValues, true)) {
             throw ConfigurationException::invalidPropertyValue(self::class, 'type', $type);
         }
+
+        #
+        # @TODO: datetime format validation
+        #
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat(): string
+    {
+        return $this->format;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isImmutable(): bool
+    {
+        return $this->immutable;
+    }
+
+    public function isDateTimeRelated(): bool
+    {
+        if ($this->type === self::TYPE_DATETIME) {
+            return true;
+        }
+
+        if ($this->type === self::TYPE_TIMESTAMP) {
+            return true;
+        }
+
+        return false;
     }
 }

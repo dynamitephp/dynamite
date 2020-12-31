@@ -33,8 +33,19 @@ class ItemSerializer
             $propertyReflection->setAccessible(true);
             $propertyValue = $propertyReflection->getValue($item);
 
-            if ($attribute instanceof Attribute) {
+            if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
                 $values[$attrName] = $propertyValue;
+                continue;
+            }
+
+            if ($attribute instanceof Attribute && $attribute->isDateTimeRelated()) {
+               if($propertyValue === null) {
+                   $values[$attrName] = $propertyValue;
+                   continue;
+               }
+
+               /** @var \DateTimeInterface $propertyValue */
+                $values[$attrName] = $propertyValue->format($attribute->getFormat());
                 continue;
             }
 
