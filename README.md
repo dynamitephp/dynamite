@@ -33,7 +33,7 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - [ ] Psalm pipeline must be green
 - [ ] PHPUnit coverage > 90%
 - [ ] Support for PHP8 Attributes 
-- [ ] `@DenormalizeTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
+- [ ] `@DuplicateTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
 - [ ] Some Console commands for Items mapping validation and project maintenance
 
 

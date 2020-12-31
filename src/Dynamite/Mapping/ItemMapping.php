@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 use Dynamite\Configuration\AttributeInterface;
+use Dynamite\Configuration\DuplicateTo;
 use Dynamite\Configuration\Item;
 use Dynamite\Configuration\NestedItem;
 
@@ -28,12 +29,18 @@ class ItemMapping
      */
     private array $nestedItems;
 
+    /**
+     * @var DuplicateTo[]
+     */
+    private array $duplicates;
+
     public function __construct(
         Item $item,
         Key $partitionKey,
         array $propertiesMapping,
         ?Key $sortKey = null,
-        array $nestedItems = []
+        array $nestedItems = [],
+        array $duplicates = []
     )
     {
         $this->item = $item;
@@ -41,6 +48,7 @@ class ItemMapping
         $this->propertiesMapping = $propertiesMapping;
         $this->sortKey = $sortKey;
         $this->nestedItems = $nestedItems;
+        $this->duplicates = $duplicates;
     }
 
     public function getObjectType(): string
@@ -99,5 +107,10 @@ class ItemMapping
     public function getNestedItems(): array
     {
         return $this->nestedItems;
+    }
+
+    public function getDuplicates(): array
+    {
+        return $this->duplicates;
     }
 }
