@@ -17,12 +17,14 @@ class ItemMapping
     private Key $partitionKey;
     private ?Key $sortKey;
     /**
-     * @var array<string, AttributeInterface>
+     * @var AttributeInterface[]
+     * @psalm-var array<string, AttributeInterface>
      */
     private array $propertiesMapping;
 
     /**
-     * @var array<string, NestedItem>
+     * @var NestedItem[]
+     * @psalm-var array<string, NestedItem>
      */
     private array $nestedItems;
 
