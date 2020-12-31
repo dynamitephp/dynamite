@@ -26,6 +26,12 @@ class Attribute extends AbstractAttribute
     protected string $format = 'U';
 
     /**
+     * When true, an DateTimeImmutable will be created instead of DateTime.
+     * @var bool
+     */
+    protected bool $immutable = false;
+
+    /**
      * @return void
      */
     protected function assertType(string $type)

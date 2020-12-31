@@ -28,4 +28,6 @@ When using `datetime`, a `format` property is required. [Default Date formating 
 
 `timestamp` acts as a `datetime` field with forced `U` format.
 
+By default, Dynamite will return an `DateTime` instance to this property. If you want to receive `DateTimeImmutable` object,
+add `immutable=true` to your attribute definition.
 

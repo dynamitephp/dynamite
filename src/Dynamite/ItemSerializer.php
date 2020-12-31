@@ -39,12 +39,12 @@ class ItemSerializer
             }
 
             if ($attribute instanceof Attribute && $attribute->isDateTimeRelated()) {
-               if($propertyValue === null) {
-                   $values[$attrName] = $propertyValue;
-                   continue;
-               }
+                if ($propertyValue === null) {
+                    $values[$attrName] = $propertyValue;
+                    continue;
+                }
 
-               /** @var \DateTimeInterface $propertyValue */
+                /** @var \DateTimeInterface $propertyValue */
                 $values[$attrName] = $propertyValue->format($attribute->getFormat());
                 continue;
             }
@@ -82,9 +82,25 @@ class ItemSerializer
             $propertyReflection = $reflectionClass->getProperty($propertyName);
             $propertyReflection->setAccessible(true);
             $propValue = $data[$attribute->getName()];
-            if ($attribute instanceof Attribute) {
+            if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
                 $propertyReflection->setValue($instantiatedObject, $propValue);
                 continue;
+            }
+
+            if ($attribute instanceof Attribute && $attribute->isDateTimeRelated()) {
+                if ($propValue === null) {
+                    $propertyReflection->setValue($instantiatedObject, $propValue);
+                    continue;
+                }
+
+                $dateTime = \DateTime::createFromFormat($attribute->getFormat(), $propValue);
+                if ($attribute->isImmutable()) {
+                    $dateTime = \DateTimeImmutable::createFromMutable($dateTime);
+                }
+
+                $propertyReflection->setValue($instantiatedObject, $dateTime);
+                continue;
+
             }
 
             if ($attribute instanceof NestedValueObjectAttribute) {
