@@ -70,7 +70,8 @@ class Dynamite
         $this->singleTableService = new SingleTableService(
             $this->client,
             $this->tableConfiguration,
-            $this->marshaler
+            $this->marshaler,
+            $this->logger
         );
     }
 

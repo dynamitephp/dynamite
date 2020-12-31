@@ -7,6 +7,7 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
 use Dynamite\Typed\QueryRequest;
 use Dynamite\Typed\QueryResponse;
+use Psr\Log\LoggerInterface;
 
 /**
  * A wrapper for DynamoDbClient which knows your table configuration so you do not have to inject them anywhere.
@@ -21,12 +22,19 @@ class SingleTableService
     private Marshaler $marshaler;
     private TableConfiguration $table;
     private DynamoDbClient $client;
+    protected LoggerInterface $logger;
 
-    public function __construct(DynamoDbClient $client, TableConfiguration $table, Marshaler $marshaler)
+    public function __construct(
+        DynamoDbClient $client,
+        TableConfiguration $table,
+        Marshaler $marshaler,
+        LoggerInterface $logger
+    )
     {
         $this->client = $client;
         $this->table = $table;
         $this->marshaler = $marshaler;
+        $this->logger = $logger;
     }
 
 
@@ -57,8 +65,11 @@ class SingleTableService
             [$partitionKeyAttr, $sortKeyAttr] = $this->table->getIndexPrimaryKeyPair($index);
         }
 
+        $tableName = $this->table->getTableName();
+        $debugMessage = sprintf('Executing Query operation on table "%s" ', $tableName);
+
         $queryRequest = [
-            'TableName' => $this->table->getTableName(),
+            'TableName' => $this->table,
             'KeyConditionExpression' => '#pk = :pk',
             'ExpressionAttributeNames' => [
                 '#pk' => $partitionKeyAttr
@@ -69,11 +80,14 @@ class SingleTableService
         ];
 
         if ($index !== null) {
+            $debugMessage = sprintf('%s and "%s" index' . $debugMessage, $index);
             $queryRequest['IndexName'] = $index;
         }
 
+        $this->logger->debug($debugMessage);
         /** @psalm-var array<array-key, mixed> $items */
         $response = $this->client->query($queryRequest)->toArray();
+
         return new QueryResponse($response, $this->marshaler);
     }
 
@@ -105,7 +119,7 @@ class SingleTableService
             $this->getTableConfiguration()->getPartitionKeyName() => $this->marshaler->marshalValue($pk)
         ];
 
-        if($sk !== null) {
+        if ($sk !== null) {
             $key[$this->getTableConfiguration()->getSortKeyName()] = $this->marshaler->marshalValue($sk);
         }
 
@@ -116,7 +130,7 @@ class SingleTableService
 
         $result = $this->client->getItem($request)->toArray();
 
-        if(!isset($result['Item'])) {
+        if (!isset($result['Item'])) {
             return null;
         }
         return $this->unmarshalItem($result['Item']);
