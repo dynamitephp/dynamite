@@ -5,6 +5,8 @@ namespace Dynamite;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
+use Aws\DynamoDb\WriteRequestBatch;
+use Aws\Exception\AwsException;
 use Dynamite\Typed\QueryRequest;
 use Dynamite\Typed\QueryResponse;
 use Psr\Log\LoggerInterface;
@@ -134,5 +136,37 @@ class SingleTableService
             return null;
         }
         return $this->unmarshalItem($result['Item']);
+    }
+
+    public function writeRequestBatch(
+        array $itemsToPut = [],
+        array $itemsToDelete = []
+    )
+    {
+        $writeRequestBatch = new WriteRequestBatch($this->client, [
+            'table' => $this->table->getTableName(),
+            'error' => function (AwsException $exception) {
+                /**
+                 * By default it does not throw all exceptions
+                 */
+                throw $exception;
+            }
+        ]);
+
+        foreach ($itemsToPut as $item) {
+            $writeRequestBatch->put(
+                $this->marshaler->marshalItem($item),
+                $this->table->getTableName()
+            );
+        }
+
+        foreach ($itemsToDelete as $item) {
+            $writeRequestBatch->delete(
+                $this->marshaler->marshalItem($item),
+                $this->table->getTableName()
+            );
+        }
+
+        $writeRequestBatch->flush();
     }
 }
