@@ -138,6 +138,11 @@ class SingleTableService
         return $this->unmarshalItem($result['Item']);
     }
 
+    /**
+     * @param array $itemsToPut
+     * @param array $itemsToDelete
+     * @throws AwsException
+     */
     public function writeRequestBatch(
         array $itemsToPut = [],
         array $itemsToDelete = []

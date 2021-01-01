@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Dynamite;
 
+use Aws\Exception\AwsException;
 use Dynamite\Exception\DynamiteException;
 use Dynamite\Exception\ItemNotFoundException;
 use Dynamite\Exception\ItemRepositoryException;
@@ -157,6 +158,12 @@ class ItemRepository
         throw new \Exception('access pattern not found');
     }
 
+    /**
+     * @param object $item
+     * @throws AwsException
+     * @throws ItemRepositoryException
+     * @throws DynamiteException
+     */
     public function put(object $item): void
     {
         if (!($item instanceof $this->itemName)) {
