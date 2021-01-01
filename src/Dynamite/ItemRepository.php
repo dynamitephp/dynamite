@@ -203,6 +203,9 @@ class ItemRepository
             $tablePkName = $this->singleTableService->getTableConfiguration()->getPartitionKeyName();
             $tableSkName = $this->singleTableService->getTableConfiguration()->getSortKeyName();
 
+            $serializedValues[$tablePkName] = $partitionKeyValue;
+            $serializedValues[$tableSkName] = $sortKeyValue;
+
             $batch = [];
             $batch[] = $serializedValues;
 
