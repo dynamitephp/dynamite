@@ -7,6 +7,7 @@ namespace Dynamite\Mapping;
 use Doctrine\Common\Annotations\Reader;
 use Dynamite\Configuration\Attribute;
 use Dynamite\Configuration\AttributeInterface;
+use Dynamite\Configuration\DuplicateTo;
 use Dynamite\Configuration\Item;
 use Dynamite\Configuration\NestedItem;
 use Dynamite\Configuration\NestedItemAttribute;
@@ -15,7 +16,6 @@ use Dynamite\Configuration\PartitionKey;
 use Dynamite\Configuration\PartitionKeyFormat;
 use Dynamite\Configuration\SortKey;
 use Dynamite\Configuration\SortKeyFormat;
-use Dynamite\Exception\DynamiteException;
 use ReflectionClass;
 
 /**
@@ -72,6 +72,10 @@ class ItemMappingReader
         $sortKeyAttr = null;
 
         $classPropertyReflections = $classReflection->getProperties();
+
+        $classAnnotations = $this->reader->getClassAnnotations($classReflection);
+        $duplicates = array_filter($classAnnotations, fn($annot) => $annot instanceof DuplicateTo);
+
         foreach ($classPropertyReflections as $propertyReflection) {
             $propertyName = $propertyReflection->getName();
 
@@ -126,7 +130,8 @@ class ItemMappingReader
             new Key($partitionKeyFormat->getValue(), $partitionKeyAttr),
             $attributesMapping,
             ($sortKeyAttr !== null && $sortKeyFormat !== null ? new Key($sortKeyFormat, $sortKeyAttr) : null),
-            $nestedItems
+            $nestedItems,
+            $duplicates
         );
 
     }
