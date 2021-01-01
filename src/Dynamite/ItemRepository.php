@@ -51,8 +51,8 @@ class ItemRepository
      *
      * @param array<string, string>|string $partitionKey
      * @param array<string, string>|string $sortKey
-     * @throws ItemNotFoundException
      * @return object
+     * @throws ItemNotFoundException
      */
     public function getItem($partitionKey, $sortKey = null): object
     {
@@ -73,11 +73,25 @@ class ItemRepository
 
         if ($sortKey === null) {
             $sortKey = $this->itemMapping->getSortKeyFormat();
+        } elseif (is_array($sortKey)) {
+            $skFormat = $this->itemMapping->getSortKeyFormat();
+
+            $skPlaceholders = [];
+
+            foreach ($sortKey as $key => $val) {
+                $skPlaceholders[sprintf('{%s}', $key)] = $val;
+            }
+
+            $sortKey = str_replace(
+                array_keys($skPlaceholders),
+                array_values($skPlaceholders),
+                $skFormat
+            );
         }
 
         $item = $this->singleTableService->getItem($partitionKey, $sortKey);
 
-        if($item === null) {
+        if ($item === null) {
             throw new ItemNotFoundException(
                 sprintf('Could not find item with PK "%s" and SK "%s"', $partitionKey, $sortKey)
             );
