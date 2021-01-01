@@ -259,4 +259,9 @@ class ItemRepository
             $response->getLastEvaluatedKey()
         );
     }
+
+    protected function getSingleTableService(): SingleTableService
+    {
+        return $this->singleTableService;
+    }
 }
