@@ -23,4 +23,22 @@ class DuplicateTo
     public ?string $sk;
 
     public array $props = [];
+
+    /**
+     * @return array
+     */
+    public function getProps(): array
+    {
+        return $this->props;
+    }
+
+    public function getPartitionKeyFormat(): string
+    {
+        return $this->pk;
+    }
+
+    public function getSortKeyFormat(): string
+    {
+        return $this->sk;
+    }
 }
