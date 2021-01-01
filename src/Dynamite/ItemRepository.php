@@ -164,7 +164,6 @@ class ItemRepository
         }
 
         $serializedValues = $this->itemSerializer->serialize($item, $this->itemMapping);
-        $partitionKeyAttr = $this->itemMapping->getPartitionKeyProperty();
         $partitionKeyFormat = $this->itemMapping->getPartitionKeyFormat();
         $primaryKeyPlaceholders = [];
 
@@ -197,6 +196,45 @@ class ItemRepository
         }
 
         $serializedValues['objectType'] = $this->itemMapping->getObjectType();
+
+        $duplicates = $this->itemMapping->getDuplicates();
+
+        if (count($duplicates) > 0) {
+            $tablePkName = $this->singleTableService->getTableConfiguration()->getPartitionKeyName();
+            $tableSkName = $this->singleTableService->getTableConfiguration()->getSortKeyName();
+
+            $batch = [];
+            $batch[] = $serializedValues;
+
+            foreach ($duplicates as $duplicate) {
+                $duplicatedItem = [];
+                $propsToDuplicate = $duplicate->getProps();
+
+                foreach ($serializedValues as $key => $val) {
+                    if (in_array($key, $propsToDuplicate)) {
+                        $duplicatedItem[$key] = $serializedValues[$key];
+                    }
+                }
+
+                $duplicatedItem[$tablePkName] = \str_replace(
+                    array_keys($primaryKeyPlaceholders),
+                    array_values($primaryKeyPlaceholders),
+                    $duplicate->getPartitionKeyFormat()
+                );
+
+                $duplicatedItem[$tableSkName] = \str_replace(
+                    array_keys($primaryKeyPlaceholders),
+                    array_values($primaryKeyPlaceholders),
+                    $duplicate->getSortKeyFormat()
+                );
+
+                $batch[] = $duplicatedItem;
+
+            }
+
+            $this->singleTableService->writeRequestBatch($batch);
+            return;
+        }
 
         $this->singleTableService->putItem(
             $partitionKeyValue,
