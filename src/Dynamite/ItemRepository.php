@@ -174,7 +174,8 @@ class ItemRepository
         $partitionKeyFormat = $this->itemMapping->getPartitionKeyFormat();
         $primaryKeyPlaceholders = [];
 
-        foreach ($serializedValues as $property => $value) {
+        foreach ($serializedValues as $attr => $value) {
+            $property = $this->itemMapping->attributeToProperty($attr);
             if (is_array($value)) {
                 foreach ($value as $valueKey => $val) {
                     if (is_array($val)) {

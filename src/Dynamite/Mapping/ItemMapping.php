@@ -7,6 +7,7 @@ use Dynamite\Configuration\AttributeInterface;
 use Dynamite\Configuration\DuplicateTo;
 use Dynamite\Configuration\Item;
 use Dynamite\Configuration\NestedItem;
+use Dynamite\Exception\DynamiteException;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -112,5 +113,21 @@ class ItemMapping
     public function getDuplicates(): array
     {
         return $this->duplicates;
+    }
+
+    /**
+     * Converts attribute names to property name
+     * @param string $attr
+     * @return string
+     */
+    public function attributeToProperty(string $attr): string
+    {
+        foreach ($this->propertiesMapping as $propKey => $attribute) {
+            if ($attribute->getName() === $attr) {
+                return $propKey;
+            }
+        }
+
+        throw new DynamiteException(sprintf('Could not find attribute with name %s', $attr));
     }
 }
