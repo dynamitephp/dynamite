@@ -6,7 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.1] - 2021-01-09
+### Added
+- DynamiteRegistry for managing multiple DynamoDbClients
+- Added `DuplicateTo` annotation handling
+- Added `DynamiteTestSuiteHelperTrait` util for unit tests
+- Added Symfony bundle and `jadob/jadob` service provider
+- Added `SingleTableService#writeRequestBatch` method
+- Added class stubs for DynamoDB API requests/responses 
+- Added `QueryIterator`
+- Added `CachedItemMappingReader`
+- Getting and putting an item in `ItemRepository`
+- Support for custom `ItemRepository` classes
 
+### Changed
+- New project directory structure
+- NestedItem config is now stored in `ItemMapping`
 
 ## [0.0.0] - 2020-12-20
 ### Added

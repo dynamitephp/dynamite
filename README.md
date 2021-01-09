@@ -23,17 +23,17 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - [ ] Document how to store an item
 - [x] Getting item
 - [ ] Document how to get an item
-- [ ] `ItemRepository`
+- [x] `ItemRepository`
 - [ ] Access Pattern Operations
 - [ ] Bulk operations
 - [ ] Condition Expressions
 - [ ] Unit of Work
 - [ ] Support for all operations in `SingleTableService`
-- [ ] `DynamiteRegistry` to work with more than one table
+- [x] `DynamiteRegistry` to work with more than one table
 - [ ] Psalm pipeline must be green
 - [ ] PHPUnit coverage > 90%
 - [ ] Support for PHP8 Attributes 
-- [ ] `@DuplicateTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
+- [x] `@DuplicateTo` annotation - duplicate some attributes to additional items while putting them to DynamoDB
 - [ ] Some Console commands for Items mapping validation and project maintenance
 
 
