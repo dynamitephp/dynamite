@@ -31,6 +31,15 @@ class Attribute extends AbstractAttribute
      */
     protected bool $immutable = false;
 
+
+    public function __construct(array $props)
+    {
+        $this->immutable = $props['immutable'] ?? false;
+        $this->format = $props['format'] ?? 'U';
+
+        parent::__construct($props);
+    }
+
     /**
      * @return void
      */
