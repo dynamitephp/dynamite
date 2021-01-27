@@ -21,7 +21,7 @@ class AttributeTest extends TestCase
     public function testAttributeCreationWillFailOnMissingName(): void
     {
         $this->expectException(ConfigurationException::class);
-        $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\AbstractAttribute" annotation.');
+        $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\Attribute" annotation.');
 
         new Attribute(['type' => 'number']);
     }

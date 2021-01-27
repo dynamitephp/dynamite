@@ -42,7 +42,7 @@ abstract class AbstractAttribute implements AttributeInterface
     {
         foreach ($requiredProps as $requiredProp) {
             if (!isset($props[$requiredProp])) {
-                throw ConfigurationException::missingAnnotationProperty(self::class, $requiredProp);
+                throw ConfigurationException::missingAnnotationProperty(static::class, $requiredProp);
             }
         }
     }
