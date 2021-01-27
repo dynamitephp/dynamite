@@ -3,9 +3,7 @@ declare(strict_types=1);
 
 namespace Dynamite;
 
-use Doctrine\Common\Annotations\Reader;
 use Dynamite\Configuration\Attribute;
-use Dynamite\Configuration\NestedItem;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Exception\DynamiteException;
@@ -13,16 +11,12 @@ use Dynamite\Mapping\ItemMapping;
 use ReflectionClass;
 
 
+/**
+ * @author pizzaminded <mikolajczajkowsky@gmail.com>
+ * @license MIT
+ */
 class ItemSerializer
 {
-
-    private Reader $reader;
-
-    public function __construct(Reader $reader)
-    {
-        $this->reader = $reader;
-    }
-
     public function serialize(object $item, ItemMapping $itemMapping): array
     {
         $values = [];
@@ -116,9 +110,7 @@ class ItemSerializer
 
             if ($attribute instanceof NestedItemAttribute) {
                 $nestedItemFqcn = $attribute->getType();
-                $nestedItemReflection = new ReflectionClass($nestedItemFqcn);
-                /** @var NestedItem $nestedItemConfiguration */
-                $nestedItemConfiguration = $this->reader->getClassAnnotation($nestedItemReflection, NestedItem::class);
+                $nestedItemConfiguration = $itemMapping->getNestedItem($propertyName);
                 $deserializeMethod = $nestedItemConfiguration->getDeserializeMethod();
                 if ($deserializeMethod !== null) {
                     $propertyReflection->setValue($instantiatedObject, $nestedItemFqcn::$deserializeMethod($propValue));

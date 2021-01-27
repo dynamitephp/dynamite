@@ -66,7 +66,7 @@ class Dynamite
         $this->managedObjects = $managedObjects;
         $this->marshaler = $marshaler ?? new Marshaler();
         $this->itemMappingReader = $mappingReader ?? new ItemMappingReader($this->annotationReader);
-        $this->itemSerializer = new ItemSerializer($this->annotationReader);
+        $this->itemSerializer = new ItemSerializer();
         $this->singleTableService = new SingleTableService(
             $this->client,
             $this->tableConfiguration,

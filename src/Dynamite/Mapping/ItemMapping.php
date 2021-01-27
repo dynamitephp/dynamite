@@ -19,13 +19,13 @@ class ItemMapping
     private Key $partitionKey;
     private ?Key $sortKey;
     /**
-     * @var AttributeInterface[]
+     * @var AttributeInterface[] - property name as a key
      * @psalm-var array<string, AttributeInterface>
      */
     private array $propertiesMapping;
 
     /**
-     * @var NestedItem[]
+     * @var NestedItem[] - property name as a key
      * @psalm-var array<string, NestedItem>
      */
     private array $nestedItems;
@@ -129,5 +129,14 @@ class ItemMapping
         }
 
         throw new DynamiteException(sprintf('Could not find attribute with name %s', $attr));
+    }
+
+    public function getNestedItem(string $propName): NestedItem
+    {
+        if(!isset($this->nestedItems[$propName])) {
+            throw new DynamiteException(sprintf('Could not find any nested item in "%s" property.', $propName));
+        }
+
+        return $this->nestedItems[$propName];
     }
 }
