@@ -47,7 +47,9 @@ class Dynamite
      * @param LoggerInterface $logger
      * @param Reader $annotationReader
      * @param TableConfiguration $tableConfiguration
+     * @param array $managedObjects
      * @param Marshaler|null $marshaler
+     * @param ItemMappingReader|null $mappingReader
      */
     public function __construct(
         DynamoDbClient $client,
