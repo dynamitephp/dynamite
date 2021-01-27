@@ -7,6 +7,7 @@ use Dynamite\Configuration\Attribute;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Exception\DynamiteException;
+use Dynamite\Exception\SerializationException;
 use Dynamite\Mapping\ItemMapping;
 use ReflectionClass;
 
@@ -44,11 +45,22 @@ class ItemSerializer
             }
 
             if ($attribute instanceof NestedValueObjectAttribute) {
-                $valueObjectReflection = new ReflectionClass($propertyValue);
-                $valueObjectPropertyReflection = $valueObjectReflection->getProperty($attribute->getProperty());
-                $valueObjectPropertyReflection->setAccessible(true);
 
-                $values[$attrName] = $valueObjectPropertyReflection->getValue($propertyValue);
+                if ($attribute->isCollection()) {
+                    if (!is_array($propertyValue)) {
+                        throw SerializationException::propIsNotArray($propertyName, get_class($item), $propertyValue);
+                    }
+
+                    $output = [];
+                    foreach ($propertyValue as $val) {
+                        $output[] = $this->nestedValueObjectToScalar($attribute, $val);
+                    }
+
+                    $values[$attrName] = $output;
+                    continue;
+
+                }
+                $values[$attrName] = $this->nestedValueObjectToScalar($attribute, $propertyValue);
                 continue;
             }
 
@@ -123,5 +135,18 @@ class ItemSerializer
         }
 
         return $instantiatedObject;
+    }
+
+    /**
+     * @param NestedValueObjectAttribute $nestedVO
+     * @param object $propValue
+     */
+    protected function nestedValueObjectToScalar(NestedValueObjectAttribute $nestedVO, object $propValue)
+    {
+        $valueObjectReflection = new ReflectionClass($propValue);
+        $valueObjectPropertyReflection = $valueObjectReflection->getProperty($nestedVO->getProperty());
+        $valueObjectPropertyReflection->setAccessible(true);
+
+        return $valueObjectPropertyReflection->getValue($propValue);
     }
 }

@@ -7,11 +7,10 @@ namespace Dynamite\Configuration;
 use Dynamite\Exception\ConfigurationException;
 
 /**
- * A single scalar value which will be converted to object-with-single-property.
+ * A object-with-single-property (or array of them) which will be converted to scalar value (or array of them).
  * Use cases: Value objects with single values (eg: Colour, Currency)
  *
  * @Annotation
- *
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
@@ -24,16 +23,27 @@ class NestedValueObjectAttribute extends AbstractAttribute
      */
     protected string $property;
 
+    /**
+     * Does it store a collection of classes?
+     * @var bool
+     */
+    protected bool $collection = false;
+
 
     public function __construct(array $props)
     {
         parent::__construct($props);
         $this->assertPropertiesPresence($props, ['property']);
 
+        if (isset($props['collection'])) {
+            $this->collection = (bool)$props['collection'];
+        }
+
         $this->property = $props['property'];
     }
 
     /**
+     * @param string $type
      * @return void
      */
     protected function assertType(string $type)
@@ -50,4 +60,13 @@ class NestedValueObjectAttribute extends AbstractAttribute
     {
         return $this->property;
     }
+
+    /**
+     * @return bool
+     */
+    public function isCollection(): bool
+    {
+        return $this->collection;
+    }
+
 }

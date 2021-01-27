@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Dynamite;
 
 
+use Dynamite\Fixtures\Valid\BankAccount;
+use Dynamite\Fixtures\Valid\CurrencyNestedValueObject;
+use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\ProductNutritionNestedItem;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
@@ -26,9 +29,9 @@ class ItemSerializerTest extends TestCase
             ->setEan('59012345678')
             ->setNutritionFacts(
                 (new ProductNutritionNestedItem())
-                ->setCarbs(1.23)
-                ->setCalories(400)
-                ->setAllergens(['cardboard'])
+                    ->setCarbs(1.23)
+                    ->setCalories(400)
+                    ->setAllergens(['cardboard'])
             );
 
         $productMapping = $mappingReader->getMappingFor(Product::class);
@@ -49,4 +52,50 @@ class ItemSerializerTest extends TestCase
         $this->assertSame($snapshot, $serializedProduct);
     }
 
+
+    public function testObjectSerializationForNestedValueObject()
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(ExchangeRate::class);
+
+        $exchange = new ExchangeRate(new CurrencyNestedValueObject('CZK'), new CurrencyNestedValueObject('PLN'));
+
+        $serialized = $serializer->serialize($exchange, $mapping);
+
+        $snapshot = [
+            'fr' => 'CZK',
+            'to' => 'PLN'
+        ];
+
+
+        $this->assertSame($snapshot, $serialized);
+    }
+
+    public function testObjectSerializationForNestedValueObjectCollection()
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(BankAccount::class);
+
+
+        $account = new BankAccount();
+        $account->addSupportedCurrency(new CurrencyNestedValueObject('EUR'));
+        $account->addSupportedCurrency(new CurrencyNestedValueObject('PLN'));
+        $account->addSupportedCurrency(new CurrencyNestedValueObject('CHF'));
+
+        $serialized = $serializer->serialize($account, $mapping);
+
+        $snapshot = [
+            'cur' => [
+                'EUR',
+                'PLN',
+                'CHF'
+            ]
+        ];
+
+        $this->assertSame($snapshot, $serialized);
+    }
 }

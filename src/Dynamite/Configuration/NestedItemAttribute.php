@@ -17,6 +17,7 @@ class NestedItemAttribute extends AbstractAttribute
 {
 
     /**
+     * @param string $type
      * @return void
      */
     protected function assertType(string $type)

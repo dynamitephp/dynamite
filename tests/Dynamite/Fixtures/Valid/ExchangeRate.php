@@ -36,12 +36,12 @@ class ExchangeRate
      */
     private CurrencyNestedValueObject $to;
 
-    /**
-     * @Dynamite\NestedValueObjectAttribute(name="date", type="\Dynamite\Fixtures\Valid\CurrencyNestedValueObject", property="value")
-     * @var CurrencyNestedValueObject
-     */
-    private \DateTimeInterface $date;
-
     private float $value;
+
+    public function __construct(CurrencyNestedValueObject $from, CurrencyNestedValueObject $to)
+    {
+        $this->from = $from;
+        $this->to = $to;
+    }
 
 }
