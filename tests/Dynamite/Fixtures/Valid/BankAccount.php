@@ -35,4 +35,14 @@ class BankAccount
         $this->supportedCurrencies[] = $currencyNestedValueObject;
     }
 
+    /**
+     * @return CurrencyNestedValueObject[]
+     */
+    public function getSupportedCurrencies(): array
+    {
+        return $this->supportedCurrencies;
+    }
+
+
+
 }

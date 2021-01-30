@@ -98,4 +98,32 @@ class ItemSerializerTest extends TestCase
 
         $this->assertSame($snapshot, $serialized);
     }
+
+    public function testObjectHydrationWithNestedValueObjectCollection()
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(BankAccount::class);
+
+
+        $data = [
+            'cur' => [
+                'EUR',
+                'PLN',
+                'CHF'
+            ]
+        ];
+
+
+        /** @var BankAccount $deserialized */
+        $deserialized = $serializer->hydrateObject(BankAccount::class, $mapping,$data );
+
+        $this->assertInstanceOf(BankAccount::class, $deserialized);
+        $this->assertCount(3, $deserialized->getSupportedCurrencies());
+
+        $vo = $deserialized->getSupportedCurrencies()[0];
+        $this->assertInstanceOf(CurrencyNestedValueObject::class, $vo);
+        $this->assertSame('EUR', $vo->getValue());
+    }
 }

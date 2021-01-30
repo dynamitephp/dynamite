@@ -110,12 +110,21 @@ class ItemSerializer
             }
 
             if ($attribute instanceof NestedValueObjectAttribute) {
-                $valueObjectFqcn = $attribute->getType();
-                $valueObjectReflection = new ReflectionClass($valueObjectFqcn);
-                $valueObjectInstance = $valueObjectReflection->newInstanceWithoutConstructor();
-                $valueObjectProp = $valueObjectReflection->getProperty($attribute->getProperty());
-                $valueObjectProp->setAccessible(true);
-                $valueObjectProp->setValue($valueObjectInstance, $propValue);
+                if ($attribute->isCollection()) {
+                    if (!is_array($propValue)) {
+                        throw SerializationException::propIsNotArray($propertyName, $className, $propValue);
+                    }
+
+                    $output = [];
+                    foreach ($propValue as $prop) {
+                        $output[] = $this->scalarToNestedValueObject($attribute, $prop);
+                    }
+
+                    $propertyReflection->setValue($instantiatedObject, $output);
+                    continue;
+                }
+
+                $valueObjectInstance = $this->scalarToNestedValueObject($attribute, $propValue);
                 $propertyReflection->setValue($instantiatedObject, $valueObjectInstance);
                 continue;
             }
@@ -140,6 +149,8 @@ class ItemSerializer
     /**
      * @param NestedValueObjectAttribute $nestedVO
      * @param object $propValue
+     * @return string|integer|bool|null
+     * @throws \ReflectionException
      */
     protected function nestedValueObjectToScalar(NestedValueObjectAttribute $nestedVO, object $propValue)
     {
@@ -148,5 +159,23 @@ class ItemSerializer
         $valueObjectPropertyReflection->setAccessible(true);
 
         return $valueObjectPropertyReflection->getValue($propValue);
+    }
+
+    /**
+     * @param NestedValueObjectAttribute $nestedVO
+     * @param string|integer|bool|null $propValue
+     * @return object
+     * @throws \ReflectionException
+     */
+    protected function scalarToNestedValueObject(NestedValueObjectAttribute $nestedVO, $propValue): object
+    {
+        $valueObjectFqcn = $nestedVO->getType();
+        $valueObjectReflection = new ReflectionClass($valueObjectFqcn);
+        $valueObjectInstance = $valueObjectReflection->newInstanceWithoutConstructor();
+        $valueObjectProp = $valueObjectReflection->getProperty($nestedVO->getProperty());
+        $valueObjectProp->setAccessible(true);
+        $valueObjectProp->setValue($valueObjectInstance, $propValue);
+
+        return $valueObjectInstance;
     }
 }
