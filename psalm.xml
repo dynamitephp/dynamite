@@ -10,13 +10,13 @@
         <directory name="src"/>
         <ignoreFiles>
             <directory name="vendor"/>
-            <directory name="src/Dynamite/Tests/Fixtures"/>
+            <directory name="tests/Dynamite/Fixtures"/>
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
         <PropertyNotSetInConstructor>
             <errorLevel type="suppress">
-                <directory name="src/Dynamite/Tests"/>
+                <directory name="tests"/>
             </errorLevel>
         </PropertyNotSetInConstructor>
     </issueHandlers>
