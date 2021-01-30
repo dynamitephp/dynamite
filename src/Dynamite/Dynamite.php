@@ -20,6 +20,12 @@ class Dynamite
 {
 
     /**
+     * Current lib version in semver format
+     * @var string
+     */
+    public const VERSION = '0.0.2';
+
+    /**
      * Configuration for all items in your projects
      * @var ItemMapping[]
      */
