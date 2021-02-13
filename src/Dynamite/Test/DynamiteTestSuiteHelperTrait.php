@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Dynamite\ItemSerializer;
 use Dynamite\Mapping\ItemMappingReader;
+use Dynamite\TableConfiguration;
 
 trait  DynamiteTestSuiteHelperTrait
 {
@@ -33,4 +34,11 @@ trait  DynamiteTestSuiteHelperTrait
     {
         return new ItemSerializer($this->getAnnotationReader());
     }
+
+
+    private function getGenericTableConfiguration()
+    {
+        return new TableConfiguration('dynamitetest');
+    }
+
 }
