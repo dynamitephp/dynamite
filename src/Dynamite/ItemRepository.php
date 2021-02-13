@@ -10,6 +10,7 @@ use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
 use Dynamite\Repository\AccessPatternsProviderInterface;
 use Dynamite\Typed\QueryRequest;
+use function str_replace;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -65,10 +66,9 @@ class ItemRepository
                 $pkPlaceholders[sprintf('{%s}', $key)] = $val;
             }
 
-            $partitionKey = str_replace(
-                array_keys($pkPlaceholders),
-                array_values($pkPlaceholders),
-                $pkFormat
+            $partitionKey = $this->fillPrimaryKeyFormat(
+                $pkFormat,
+                $pkPlaceholders
             );
         }
 
@@ -76,22 +76,19 @@ class ItemRepository
             $sortKey = $this->itemMapping->getSortKeyFormat();
         } elseif (is_array($sortKey)) {
             $skFormat = $this->itemMapping->getSortKeyFormat();
-
             $skPlaceholders = [];
 
             foreach ($sortKey as $key => $val) {
                 $skPlaceholders[sprintf('{%s}', $key)] = $val;
             }
 
-            $sortKey = str_replace(
-                array_keys($skPlaceholders),
-                array_values($skPlaceholders),
-                $skFormat
+            $sortKey = $this->fillPrimaryKeyFormat(
+                $skFormat,
+                $skPlaceholders
             );
         }
 
         $item = $this->singleTableService->getItem($partitionKey, $sortKey);
-
         if ($item === null) {
             throw new ItemNotFoundException(
                 sprintf('Could not find item with PK "%s" and SK "%s"', $partitionKey, $sortKey)
@@ -188,18 +185,16 @@ class ItemRepository
             }
         }
 
-        $partitionKeyValue = \str_replace(
-            array_keys($primaryKeyPlaceholders),
-            array_values($primaryKeyPlaceholders),
-            $partitionKeyFormat
+        $partitionKeyValue = $this->fillPrimaryKeyFormat(
+            $partitionKeyFormat,
+            $primaryKeyPlaceholders
         );
 
         $sortKeyValue = null;
         if ($this->itemMapping->getSortKeyFormat() !== null) {
-            $sortKeyValue = \str_replace(
-                array_keys($primaryKeyPlaceholders),
-                array_values($primaryKeyPlaceholders),
-                $this->itemMapping->getSortKeyFormat()
+            $sortKeyValue = $this->fillPrimaryKeyFormat(
+                $this->itemMapping->getSortKeyFormat(),
+                $primaryKeyPlaceholders
             );
         }
 
@@ -227,16 +222,14 @@ class ItemRepository
                     }
                 }
 
-                $duplicatedItem[$tablePkName] = \str_replace(
-                    array_keys($primaryKeyPlaceholders),
-                    array_values($primaryKeyPlaceholders),
-                    $duplicate->getPartitionKeyFormat()
+                $duplicatedItem[$tablePkName] = $this->fillPrimaryKeyFormat(
+                    $duplicate->getPartitionKeyFormat(),
+                    $primaryKeyPlaceholders
                 );
 
-                $duplicatedItem[$tableSkName] = \str_replace(
-                    array_keys($primaryKeyPlaceholders),
-                    array_values($primaryKeyPlaceholders),
-                    $duplicate->getSortKeyFormat()
+                $duplicate[$tableSkName] = $this->fillPrimaryKeyFormat(
+                    $duplicate->getSortKeyFormat(),
+                    $primaryKeyPlaceholders
                 );
 
                 $batch[] = $duplicatedItem;
@@ -274,5 +267,14 @@ class ItemRepository
     protected function getSingleTableService(): SingleTableService
     {
         return $this->singleTableService;
+    }
+
+    private function fillPrimaryKeyFormat(string $format, array $placeholders): string
+    {
+        return str_replace(
+            array_keys($placeholders),
+            array_values($placeholders),
+            $format
+        );
     }
 }
