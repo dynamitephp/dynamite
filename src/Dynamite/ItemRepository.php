@@ -227,7 +227,7 @@ class ItemRepository
                     $primaryKeyPlaceholders
                 );
 
-                $duplicate[$tableSkName] = $this->fillPrimaryKeyFormat(
+                $duplicatedItem[$tableSkName] = $this->fillPrimaryKeyFormat(
                     $duplicate->getSortKeyFormat(),
                     $primaryKeyPlaceholders
                 );
