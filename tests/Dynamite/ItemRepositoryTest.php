@@ -3,12 +3,17 @@
 
 namespace Dynamite;
 
+use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Marshaler;
+use Aws\MockHandler;
 use Dynamite\Exception\ItemNotFoundException;
 use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Product;
+use Dynamite\Fixtures\Valid\User;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class ItemRepositoryTest extends TestCase
 {
@@ -77,5 +82,71 @@ class ItemRepositoryTest extends TestCase
         );
 
         $this->assertInstanceOf(ExchangeRate::class, $object);
+    }
+
+
+    public function testGetItemIsProperlyPuttingItemWithDuplicates()
+    {
+
+        $mockHandler = new MockHandler();
+        $ddbMock = new DynamoDbClient([
+            'handler' => $mockHandler,
+            'version' => '2012-08-10',
+            'region' => 'eu-central-1'
+        ]);
+
+        /** @var MockObject|SingleTableService $stsMock */
+        $stsMock = $this->getMockBuilder(SingleTableService::class)
+            ->setConstructorArgs([
+                $ddbMock,
+                $this->getGenericTableConfiguration(),
+                new Marshaler(),
+                new NullLogger()
+            ])
+
+            ->enableOriginalConstructor()
+            ->enableProxyingToOriginalMethods()
+            ->getMock();
+
+        $stsMock
+            ->method('writeRequestBatch')
+            ->will($this->returnCallback(function (array $put, array $delete) {
+                $snapshot = [
+                    [
+                        'id' => '1',
+                        'mail' => 'mickey@example.com',
+                        'nick' => 'mickey',
+                        'dnam' => 'george',
+                        'objectType' => 'USER',
+                        'pk' => 'USER#1',
+                        'sk' => 'USER'
+                    ],
+                    [
+                        'id' => '1',
+                        'pk' => 'UDATA#mickey@example.com',
+                        'sk' => 'UDATA'
+                    ],
+                    [
+                        'id' => '1',
+                        'pk' => 'UDATA#mickey',
+                        'sk' => 'UDATA'
+                    ]
+                ];
+                $this->assertEmpty($delete);
+                $this->assertSame($snapshot, $put);
+
+            }));
+
+        $itemRepository = new ItemRepository(
+            $stsMock,
+            User::class,
+            $this->createItemMappingReader()
+                ->getMappingFor(User::class),
+            $this->createItemSerializer()
+        );
+
+
+        $user = new User('1', 'mickey@example.com', 'mickey', 'george');
+        $itemRepository->put($user);
     }
 }
