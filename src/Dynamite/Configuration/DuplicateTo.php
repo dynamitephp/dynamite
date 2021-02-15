@@ -22,6 +22,12 @@ class DuplicateTo
 
     public ?string $sk;
 
+    /**
+     * Applies transformations to Primary key attributes.
+     * @Enum({"UPPER", "LOWER", null})
+     */
+    public ?string $transform = null;
+
     public array $props = [];
 
     /**
@@ -41,4 +47,13 @@ class DuplicateTo
     {
         return $this->sk;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getTransform(): ?string
+    {
+        return $this->transform;
+    }
+
 }

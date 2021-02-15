@@ -217,7 +217,7 @@ class ItemRepository
                 $propsToDuplicate = $duplicate->getProps();
 
                 foreach ($serializedValues as $key => $val) {
-                    if (in_array($key, $propsToDuplicate)) {
+                    if (in_array($key, $propsToDuplicate, true)) {
                         $duplicatedItem[$key] = $serializedValues[$key];
                     }
                 }
@@ -269,11 +269,21 @@ class ItemRepository
         return $this->singleTableService;
     }
 
-    private function fillPrimaryKeyFormat(string $format, array $placeholders): string
+    private function fillPrimaryKeyFormat(string $format, array $placeholders, ?string $transform = null): string
     {
+        $values = array_values($placeholders);
+
+        if($transform === 'UPPER') {
+            $values = array_map('mb_strtoupper', $values);
+        }
+
+        if($transform === 'LOWER') {
+            $values = array_map('mb_strtolower', $values);
+        }
+
         return str_replace(
             array_keys($placeholders),
-            array_values($placeholders),
+            $values,
             $format
         );
     }
