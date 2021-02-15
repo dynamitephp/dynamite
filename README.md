@@ -53,6 +53,47 @@ There are some proposals you can use:
 
 ## Documentation
 
+### Item Duplication
+
+**Item duplication requires `dynamodb:BatchWriteItem` enabled.**
+
+When you need to duplicate an object to many items at once, you can use ``@DuplicateTo`` annotation:
+
+````
+/**
+ * @Dynamite\Item(objectType="USER")
+ * @Dynamite\PartitionKeyFormat("USER#{id}")
+ * @Dynamite\SortKeyFormat("USER")
+ * @Dynamite\DuplicateTo(pk="UDATA#{email}", sk="UDATA", props={"id", "username"})
+ * @Dynamite\DuplicateTo(pk="UDATA#{username}", sk="UDATA", props={"id", "email"})
+*/
+class User {
+    //...props
+}
+
+$user = new User('123', 'user@example.com', 'mickey')
+````
+
+In this case, There will be 3 items sent to DynamoDB:
+- PK: `USER#123` SK:`USER` with **all** attributes defined in item;
+- PK: `UDATA#user@example` SK: `UDATA` with `id` and `username` props;  
+- PK: `UDATA#mickey` SK: `UDATA` with `id` and `email` props.
+
+
+You can add a `transform` param to annotation to fill Primary key pair with lowercased/uppercased params:
+
+
+````
+
+//In this case PK: UDATA#MICKEY 
+@Dynamite\DuplicateTo(pk="UDATA#{username}", sk="UDATA", props={"id", "email"}, transform="UPPER")
+
+//In this case PK: UDATA#mickey
+@Dynamite\DuplicateTo(pk="UDATA#{username}", sk="UDATA", props={"id", "email"}, transform="LOWER") 
+````
+
+By default params are passed as-is. `transform` works only for params injected to key, key template remains untouched.
+
 
 ### Creating an Item
 
