@@ -24,7 +24,7 @@ class DuplicateTo
 
     /**
      * Applies transformations to Primary key attributes.
-     * @Enum({"UPPER", "LOWER", null})
+     * @Enum({"UPPER", "LOWER"})
      */
     public ?string $transform = null;
 

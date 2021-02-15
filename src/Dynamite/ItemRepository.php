@@ -224,12 +224,14 @@ class ItemRepository
 
                 $duplicatedItem[$tablePkName] = $this->fillPrimaryKeyFormat(
                     $duplicate->getPartitionKeyFormat(),
-                    $primaryKeyPlaceholders
+                    $primaryKeyPlaceholders,
+                    $duplicate->transform
                 );
 
                 $duplicatedItem[$tableSkName] = $this->fillPrimaryKeyFormat(
                     $duplicate->getSortKeyFormat(),
-                    $primaryKeyPlaceholders
+                    $primaryKeyPlaceholders,
+                    $duplicate->transform
                 );
 
                 $batch[] = $duplicatedItem;
