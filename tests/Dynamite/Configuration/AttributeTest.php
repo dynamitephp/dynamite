@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Dynamite\Configuration;
 
 
-use Dynamite\Configuration\Attribute;
 use Dynamite\Exception\ConfigurationException;
 use PHPUnit\Framework\TestCase;
 

@@ -4,19 +4,10 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 
-use Dynamite\Configuration\NestedItem;
-use Dynamite\Configuration\NestedItemAttribute;
-use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
-use Dynamite\Fixtures\DummyItemWithInvalidNestedItemReference;
-use Dynamite\Fixtures\DummyItemWithInvalidPropNameInNestedVO;
-use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
-use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
-use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Php8\AccessToken;
-use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\UserActivity;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\TestCase;
