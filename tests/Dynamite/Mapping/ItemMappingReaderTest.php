@@ -75,8 +75,8 @@ class ItemMappingReaderTest extends TestCase
 
     public function testClassAnnotationsDefinedAsPhp8Attributes()
     {
-        if(PHP_VERSION_ID < 80000) {
-            self::markTestSkipped('PHP8 is requires to test this thing!');
+        if (PHP_VERSION_ID < 80000) {
+            self::markTestSkipped('PHP8 is required to test this thing!');
         }
 
         $parser = $this->createItemMappingReader();
@@ -86,4 +86,19 @@ class ItemMappingReaderTest extends TestCase
         self::assertEquals('O2ACCTKN#{id}', $mapping->getPartitionKeyFormat());
 
     }
+
+
+    public function testPlainAttributeAnnotationsDefinedAsPhp8Attributes()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            self::markTestSkipped('PHP8 is required to test this thing!');
+        }
+
+        $parser = $this->createItemMappingReader();
+        $mapping = $parser->getMappingFor(AccessToken::class);
+
+        self::assertEquals('identifier', $mapping->getProperty('id')->getName());
+    }
+
+
 }

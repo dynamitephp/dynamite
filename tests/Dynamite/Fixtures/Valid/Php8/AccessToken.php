@@ -14,4 +14,7 @@ class AccessToken
     #[Dynamite\PartitionKey]
     protected $pk;
 
+    #[Dynamite\Attribute('identifier', type: 'string')]
+    protected string $id;
+
 }

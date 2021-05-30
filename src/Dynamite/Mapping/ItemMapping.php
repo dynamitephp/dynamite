@@ -139,4 +139,9 @@ class ItemMapping
 
         return $this->nestedItems[$propName];
     }
+
+    public function getProperty(string $name)
+    {
+        return $this->propertiesMapping[$name];
+    }
 }

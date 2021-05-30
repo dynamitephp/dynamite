@@ -103,7 +103,8 @@ class ItemMappingReader
         foreach ($classPropertyReflections as $propertyReflection) {
             $propertyName = $propertyReflection->getName();
 
-            $attribute = $this->findAttributeType($propertyReflection);
+            $attribute = $this->findAttributeType($propertyReflection, $php8);
+
             if ($attribute !== null) {
                 $attributesMapping[$propertyName] = $attribute;
 
@@ -178,10 +179,17 @@ class ItemMappingReader
      * @param \ReflectionProperty $property
      * @return AttributeInterface|null
      */
-    protected function findAttributeType(\ReflectionProperty $property): ?AttributeInterface
+    protected function findAttributeType(\ReflectionProperty $property, bool $php8): ?AttributeInterface
     {
         /** @var null|Attribute $simpleAttribute */
         $simpleAttribute = $this->reader->getPropertyAnnotation($property, Attribute::class);
+
+        if($simpleAttribute === null && $php8) {
+            $simpleAttrs = $property->getAttributes(Attribute::class);
+            if(count($simpleAttrs) > 0) {
+                return reset($simpleAttrs)->newInstance();
+            }
+        }
 
         if ($simpleAttribute !== null) {
             return $simpleAttribute;
