@@ -16,6 +16,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
+#[\Attribute(flags: \Attribute::TARGET_CLASS)]
 class DuplicateTo
 {
     public string $pk;

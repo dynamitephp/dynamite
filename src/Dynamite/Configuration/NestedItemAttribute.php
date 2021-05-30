@@ -13,6 +13,7 @@ use Dynamite\Exception\ConfigurationException;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
+#[\Attribute(flags: \Attribute::TARGET_PROPERTY)]
 class NestedItemAttribute extends AbstractAttribute
 {
 

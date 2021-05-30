@@ -13,6 +13,7 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
+#[\Attribute(flags: \Attribute::TARGET_CLASS)]
 class Item
 {
     /**

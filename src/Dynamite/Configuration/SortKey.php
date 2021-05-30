@@ -14,6 +14,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
+#[\Attribute(flags: \Attribute::TARGET_PROPERTY)]
 class SortKey
 {
 }
