@@ -8,50 +8,50 @@ use PHPUnit\Framework\TestCase;
 
 class AccessPatternTest extends TestCase
 {
-    public function testNamedConstructor()
+    public function testNamedConstructor(): void
     {
         $pattern = AccessPattern::create('ACP_TEST');
 
-        $this->assertEquals('ACP_TEST', $pattern->getName());
+        self::assertEquals('ACP_TEST', $pattern->getName());
     }
 
-    public function testWithIndex()
+    public function testWithIndex(): void
     {
         $pattern = AccessPattern::create('ACP_INDEX_TEST');
         $patternWithIndex = $pattern->withIndex('GSI1');
 
-        $this->assertNotSame($pattern, $patternWithIndex);
-        $this->assertEquals('GSI1', $patternWithIndex->getIndex());
-        $this->assertEquals('ACP_INDEX_TEST', $patternWithIndex->getName());
+        self::assertNotSame($pattern, $patternWithIndex);
+        self::assertEquals('GSI1', $patternWithIndex->getIndex());
+        self::assertEquals('ACP_INDEX_TEST', $patternWithIndex->getName());
     }
 
-    public function testPartitionKeyFormat()
+    public function testPartitionKeyFormat(): void
     {
         $pattern = AccessPattern::create('ACP_PK_TEST');
         $patternWithPk = $pattern->withPartitionKeyFormat('PK');
 
-        $this->assertNotSame($pattern, $patternWithPk);
-        $this->assertEquals('PK', $patternWithPk->getPartitionKeyFormat());
-        $this->assertEquals('ACP_PK_TEST', $patternWithPk->getName());
+        self::assertNotSame($pattern, $patternWithPk);
+        self::assertEquals('PK', $patternWithPk->getPartitionKeyFormat());
+        self::assertEquals('ACP_PK_TEST', $patternWithPk->getName());
     }
 
-    public function testSortKeyFormat()
+    public function testSortKeyFormat(): void
     {
         $pattern = AccessPattern::create('ACP_SK_TEST');
         $patternWithSk = $pattern->withSortKeyFormat('SK');
 
-        $this->assertNotSame($pattern, $patternWithSk);
-        $this->assertEquals('SK', $patternWithSk->getSortKeyFormat());
-        $this->assertEquals('ACP_SK_TEST', $patternWithSk->getName());
+        self::assertNotSame($pattern, $patternWithSk);
+        self::assertEquals('SK', $patternWithSk->getSortKeyFormat());
+        self::assertEquals('ACP_SK_TEST', $patternWithSk->getName());
     }
 
-    public function testLimit()
+    public function testLimit(): void
     {
         $pattern = AccessPattern::create('ACP_LIMIT_TEST');
         $patternWithLimit = $pattern->withLimit(420);
 
-        $this->assertNotSame($pattern, $patternWithLimit);
-        $this->assertEquals(420, $patternWithLimit->getLimit());
-        $this->assertEquals('ACP_LIMIT_TEST', $patternWithLimit->getName());
+        self::assertNotSame($pattern, $patternWithLimit);
+        self::assertEquals(420, $patternWithLimit->getLimit());
+        self::assertEquals('ACP_LIMIT_TEST', $patternWithLimit->getName());
     }
 }

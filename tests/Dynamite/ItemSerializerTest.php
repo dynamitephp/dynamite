@@ -49,7 +49,7 @@ class ItemSerializerTest extends TestCase
             'wght' => 350
         ];
 
-        $this->assertSame($snapshot, $serializedProduct);
+        self::assertSame($snapshot, $serializedProduct);
     }
 
 
@@ -70,7 +70,7 @@ class ItemSerializerTest extends TestCase
         ];
 
 
-        $this->assertSame($snapshot, $serialized);
+        self::assertSame($snapshot, $serialized);
     }
 
     public function testObjectSerializationForNestedValueObjectCollection()
@@ -96,7 +96,7 @@ class ItemSerializerTest extends TestCase
             ]
         ];
 
-        $this->assertSame($snapshot, $serialized);
+        self::assertSame($snapshot, $serialized);
     }
 
     public function testObjectHydrationWithNestedValueObjectCollection()
@@ -119,11 +119,11 @@ class ItemSerializerTest extends TestCase
         /** @var BankAccount $deserialized */
         $deserialized = $serializer->hydrateObject(BankAccount::class, $mapping,$data );
 
-        $this->assertInstanceOf(BankAccount::class, $deserialized);
-        $this->assertCount(3, $deserialized->getSupportedCurrencies());
+        self::assertInstanceOf(BankAccount::class, $deserialized);
+        self::assertCount(3, $deserialized->getSupportedCurrencies());
 
         $vo = $deserialized->getSupportedCurrencies()[0];
-        $this->assertInstanceOf(CurrencyNestedValueObject::class, $vo);
-        $this->assertSame('EUR', $vo->getValue());
+        self::assertInstanceOf(CurrencyNestedValueObject::class, $vo);
+        self::assertSame('EUR', $vo->getValue());
     }
 }

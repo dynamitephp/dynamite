@@ -20,7 +20,7 @@ class ItemRepositoryTest extends TestCase
 
     use DynamiteTestSuiteHelperTrait;
 
-    public function testGetItemWillBreakWhenSingleTableServiceReturnNothing()
+    public function testGetItemWillBreakWhenSingleTableServiceReturnNothing(): void
     {
         /** @var MockObject|SingleTableService $stsMock */
         $stsMock = $this->getMockBuilder(SingleTableService::class)
@@ -45,7 +45,7 @@ class ItemRepositoryTest extends TestCase
         $itemRepository->getItem('123');
     }
 
-    public function testGetItemIsProperlyBuildingPartitionKeyFromArrayOfPropsAndDefinedFormat()
+    public function testGetItemIsProperlyBuildingPartitionKeyFromArrayOfPropsAndDefinedFormat(): void
     {
         /** @var MockObject|SingleTableService $stsMock */
         $stsMock = $this->getMockBuilder(SingleTableService::class)
@@ -81,11 +81,11 @@ class ItemRepositoryTest extends TestCase
             ['from' => 'CZK', 'to' => 'PLN']
         );
 
-        $this->assertInstanceOf(ExchangeRate::class, $object);
+        self::assertInstanceOf(ExchangeRate::class, $object);
     }
 
 
-    public function testGetItemIsProperlyPuttingItemWithDuplicates()
+    public function testGetItemIsProperlyPuttingItemWithDuplicates(): void
     {
 
         $mockHandler = new MockHandler();
@@ -110,7 +110,7 @@ class ItemRepositoryTest extends TestCase
 
         $stsMock
             ->method('writeRequestBatch')
-            ->will($this->returnCallback(function (array $put, array $delete) {
+            ->willReturnCallback(function (array $put, array $delete) {
                 $snapshot = [
                     [
                         'id' => '1',
@@ -135,7 +135,7 @@ class ItemRepositoryTest extends TestCase
                 $this->assertEmpty($delete);
                 $this->assertSame($snapshot, $put);
 
-            }));
+            });
 
         $itemRepository = new ItemRepository(
             $stsMock,

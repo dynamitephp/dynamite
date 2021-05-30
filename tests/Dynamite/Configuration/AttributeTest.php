@@ -30,8 +30,8 @@ class AttributeTest extends TestCase
     public function testAttributeGetters(): void
     {
         $attr = new Attribute('userAge', 'number');
-        $this->assertEquals('userAge', $attr->getName());
-        $this->assertEquals('number', $attr->getType());
+        self::assertEquals('userAge', $attr->getName());
+        self::assertEquals('number', $attr->getType());
 
     }
 }

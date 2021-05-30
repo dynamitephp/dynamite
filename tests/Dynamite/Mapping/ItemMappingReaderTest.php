@@ -58,11 +58,11 @@ class ItemMappingReaderTest extends TestCase
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(UserActivity::class);
 
-        $this->assertEquals('USERACTIVITY#{userId}', $mapping->getPartitionKeyFormat());
-        $this->assertEquals('pk', $mapping->getPartitionKeyProperty());
+        self::assertEquals('USERACTIVITY#{userId}', $mapping->getPartitionKeyFormat());
+        self::assertEquals('pk', $mapping->getPartitionKeyProperty());
 
-        $this->assertEquals('ACT#{activityId}', $mapping->getSortKeyFormat());
-        $this->assertEquals('sk', $mapping->getSortKeyProperty());
+        self::assertEquals('ACT#{activityId}', $mapping->getSortKeyFormat());
+        self::assertEquals('sk', $mapping->getSortKeyProperty());
     }
 
     public function testReadingObjectType(): void
@@ -70,10 +70,10 @@ class ItemMappingReaderTest extends TestCase
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(UserActivity::class);
 
-        $this->assertEquals('USERACTIVITY', $mapping->getObjectType());
+        self::assertEquals('USERACTIVITY', $mapping->getObjectType());
     }
 
-    public function testClassAnnotationsDefinedAsPhp8Attributes()
+    public function testClassAnnotationsDefinedAsPhp8Attributes(): void
     {
         if (PHP_VERSION_ID < 80000) {
             self::markTestSkipped('PHP8 is required to test this thing!');
@@ -88,7 +88,7 @@ class ItemMappingReaderTest extends TestCase
     }
 
 
-    public function testPlainAttributeAnnotationsDefinedAsPhp8Attributes()
+    public function testPlainAttributeAnnotationsDefinedAsPhp8Attributes(): void
     {
         if (PHP_VERSION_ID < 80000) {
             self::markTestSkipped('PHP8 is required to test this thing!');
