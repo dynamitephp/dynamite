@@ -9,6 +9,8 @@ use Dynamite\Exception\ConfigurationException;
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
+ * @internal
+ * @deprecated
  */
 abstract class AbstractAttribute implements AttributeInterface
 {
