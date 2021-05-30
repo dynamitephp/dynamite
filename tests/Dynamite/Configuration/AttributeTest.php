@@ -15,11 +15,12 @@ class AttributeTest extends TestCase
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('"tank" is not a valid value for property "type" in "Dynamite\Configuration\Attribute" annotation.');
 
-        new Attribute(['name' => 'field','type' => 'tank']);
+        new Attribute('field', 'tank');
     }
 
     public function testAttributeCreationWillFailOnMissingName(): void
     {
+        self::markTestSkipped('To be dropped');
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\Attribute" annotation.');
 
@@ -28,7 +29,7 @@ class AttributeTest extends TestCase
 
     public function testAttributeGetters(): void
     {
-        $attr = new Attribute(['type' => 'number', 'name' => 'userAge']);
+        $attr = new Attribute('userAge', 'number');
         $this->assertEquals('userAge', $attr->getName());
         $this->assertEquals('number', $attr->getType());
 

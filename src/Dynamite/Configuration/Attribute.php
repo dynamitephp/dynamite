@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Dynamite\Configuration;
 
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
 use Doctrine\Common\Annotations\Annotation\Required;
 use Doctrine\Common\Annotations\Annotation\Target;
 use Dynamite\Exception\ConfigurationException;
@@ -10,6 +11,7 @@ use Dynamite\Exception\ConfigurationException;
 /**
  * @Annotation
  * @Target({"PROPERTY"})
+ * @NamedArgumentConstructor()
  * @Required()
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
@@ -32,13 +34,20 @@ class Attribute extends AbstractAttribute
      */
     protected bool $immutable = false;
 
-
-    public function __construct(array $props)
+    public function __construct(
+        string $name,
+        string $type,
+        bool $immutable = false,
+        string $format = 'U'
+    )
     {
-        $this->immutable = $props['immutable'] ?? false;
-        $this->format = $props['format'] ?? 'U';
+        $this->immutable = $immutable;
+        $this->format = $format;
 
-        parent::__construct($props);
+        parent::__construct([
+            'type' => $type,
+            'name' => $name
+        ]);
     }
 
     /**
