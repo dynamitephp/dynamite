@@ -6,8 +6,8 @@
     "require": {
         "php": ">= 7.4 | 8",
         "guzzlehttp/guzzle": "> 7",
-        "doctrine/annotations": "^1.11",
-        "aws/aws-sdk-php": "^3.173",
+        "doctrine/annotations": "^1.13",
+        "aws/aws-sdk-php": "^3.183",
         "symfony/polyfill-php80": "^1.23"
     },
     "require-dev": {
