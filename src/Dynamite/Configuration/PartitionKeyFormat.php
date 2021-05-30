@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Dynamite\Configuration;
 
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
+
 /**
  * Defines the format of Partition Key which will be stored in DB.
  * @Annotation
- *
+ * @NamedArgumentConstructor()
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */

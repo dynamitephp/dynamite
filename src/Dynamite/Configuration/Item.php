@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Dynamite\Configuration;
 
 
+use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
 use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
  * @Annotation
+ * @NamedArgumentConstructor()
  * @Target({"CLASS"})
  *
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -26,6 +28,15 @@ class Item
      * @var string
      */
     public ?string $repositoryClass;
+
+    public function __construct(
+        string $objectType,
+        ?string $repositoryClass = null
+    )
+    {
+        $this->objectType = $objectType;
+        $this->repositoryClass = $repositoryClass;
+    }
 
     /**
      * @return string
