@@ -15,6 +15,7 @@ use Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys;
 use Dynamite\Fixtures\DummyItemWithMultipleSortKeys;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
 use Dynamite\Fixtures\Valid\ExchangeRate;
+use Dynamite\Fixtures\Valid\Php8\AccessToken;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\UserActivity;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
@@ -72,62 +73,17 @@ class ItemMappingReaderTest extends TestCase
         $this->assertEquals('USERACTIVITY', $mapping->getObjectType());
     }
 
-    public function testBreakingWhenMoreThanOneSortKeyFound()
+    public function testClassAnnotationsDefinedAsPhp8Attributes()
     {
-        $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('Found two SortKey annotations (properties: "sk1", "sk2") in "Dynamite\Fixtures\DummyItemWithMultipleSortKeys" class.');
+        if(PHP_VERSION_ID < 80000) {
+            self::markTestSkipped('PHP8 is requires to test this thing!');
+        }
 
         $parser = $this->createItemMappingReader();
-        $parser->getMappingFor(DummyItemWithMultipleSortKeys::class);
-    }
+        $mapping = $parser->getMappingFor(AccessToken::class);
 
-    public function testBreakingWhenMoreThanOnePartitionKeyFound()
-    {
-        $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('Found two PartitionKey annotations (properties: "pk1", "pk2") in "Dynamite\Fixtures\DummyItemWithMultiplePartitionKeys" class.');
-
-        $parser = $this->createItemMappingReader();
-        $parser->getMappingFor(DummyItemWithMultiplePartitionKeys::class);
-    }
-
-    public function testMappingNestedValueObjectAttribute()
-    {
-        $parser = $this->createItemMappingReader();
-
-        $mapping = $parser->getMappingFor(ExchangeRate::class);
-
-        $this->assertInstanceOf(NestedValueObjectAttribute::class, $mapping->getPropertiesMapping()['from']);
-        $this->assertInstanceOf(NestedValueObjectAttribute::class, $mapping->getPropertiesMapping()['to']);
-
-    }
-
-    public function testMappingNestedValueObjectAttributeWillBreakWhenInvalidPropPassed()
-    {
-        $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no "weather" property in "\Dynamite\Fixtures\Valid\CurrencyNestedValueObject" class.');
-
-        $parser = $this->createItemMappingReader();
-        $parser->getMappingFor(DummyItemWithInvalidPropNameInNestedVO::class);
-
-    }
-
-    public function testMappingNestedItemAttribute()
-    {
-        $parser = $this->createItemMappingReader();
-        $mapping = $parser->getMappingFor(Product::class);
-
-        $this->assertInstanceOf(NestedItemAttribute::class, $mapping->getPropertiesMapping()['nutritionFacts']);
-        $this->assertInstanceOf(NestedItem::class, $mapping->getNestedItems()['nutritionFacts']);
-    }
-
-    public function testMappingNestedItemAttributeWithMissingAnnotationInReferencedObject()
-    {
-
-        $this->expectException(ItemMappingException::class);
-        $this->expectExceptionMessage('There is no NestedItem annotation on "\Dynamite\Fixtures\NestedItemWithoutAnnotation" class.');
-
-        $parser = $this->createItemMappingReader();
-        $parser->getMappingFor(DummyItemWithInvalidNestedItemReference::class);
+        self::assertEquals('acstkn', $mapping->getObjectType());
+        self::assertEquals('O2ACCTKN#{id}', $mapping->getPartitionKeyFormat());
 
     }
 }

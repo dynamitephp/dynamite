@@ -17,6 +17,7 @@ use Dynamite\Configuration\PartitionKeyFormat;
 use Dynamite\Configuration\SortKey;
 use Dynamite\Configuration\SortKeyFormat;
 use ReflectionClass;
+use function reset;
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -41,15 +42,30 @@ class ItemMappingReader
     public function getMappingFor(string $className): ItemMapping
     {
         $classReflection = new ReflectionClass($className);
+        $php8 = PHP_VERSION_ID >= 80000;
 
         /** @var Item|null $item */
         $item = $this->reader->getClassAnnotation($classReflection, Item::class);
+
+        if($item === null && $php8) {
+            $itemAttrs = $classReflection->getAttributes(Item::class);
+            if(count($itemAttrs) > 0) {
+                $item = reset($itemAttrs)->newInstance();
+            }
+        }
+
         if ($item === null) {
             throw ItemMappingException::notSupported($className);
         }
 
         /** @var PartitionKeyFormat|null $partitionKeyFormat */
         $partitionKeyFormat = $this->reader->getClassAnnotation($classReflection, PartitionKeyFormat::class);
+        if($partitionKeyFormat === null && $php8) {
+            $pkAttrs = $classReflection->getAttributes(PartitionKeyFormat::class);
+            if(count($pkAttrs) > 0) {
+                $partitionKeyFormat = reset($pkAttrs)->newInstance();
+            }
+        }
         if ($partitionKeyFormat === null) {
             throw ItemMappingException::noPartitionKeyFormatFound($className);
         }
@@ -58,6 +74,14 @@ class ItemMappingReader
         $sortKeyFormat = null;
         /** @var SortKeyFormat|null $sortKeyAnnotation */
         $sortKeyAnnotation = $this->reader->getClassAnnotation($classReflection, SortKeyFormat::class);
+
+        if($sortKeyAnnotation === null && $php8) {
+            $skfAttrs = $classReflection->getAttributes(SortKeyFormat::class);
+            if(count($skfAttrs) > 0) {
+                $sortKeyAnnotation = reset($skfAttrs)->newInstance();
+            }
+        }
+
         if ($sortKeyAnnotation !== null) {
             $sortKeyFormat = $sortKeyAnnotation->getValue();
         }
@@ -103,6 +127,13 @@ class ItemMappingReader
 
             /** @var PartitionKey|null $partitionKey */
             $partitionKey = $this->reader->getPropertyAnnotation($propertyReflection, PartitionKey::class);
+
+            if($partitionKey === null && $php8) {
+               $pkAttrs = $propertyReflection->getAttributes(PartitionKey::class);
+               if(count($pkAttrs) > 0) {
+                   $partitionKey = reset($pkAttrs)->newInstance();
+               }
+            }
             if ($partitionKey !== null && $partitionKeyAttr !== null) {
                 throw ItemMappingException::moreThanOnePartitionKey($partitionKeyAttr, $propertyName, $className);
             }
@@ -113,6 +144,13 @@ class ItemMappingReader
 
             /** @var SortKey|null $sortKey */
             $sortKey = $this->reader->getPropertyAnnotation($propertyReflection, SortKey::class);
+
+            if($sortKey === null && $php8) {
+                $skAttrs = $propertyReflection->getAttributes(SortKey::class);
+                if(count($skAttrs) > 0) {
+                    $sortKey = reset($skAttrs)->newInstance();
+                }
+            }
             if ($sortKeyAttr !== null && $sortKey !== null) {
                 throw ItemMappingException::moreThanOneSortKey($sortKeyAttr, $propertyName, $className);
             }
