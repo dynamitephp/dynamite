@@ -1,4 +1,6 @@
 # dynamite/dynamite
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpizzaminded%2Fdynamite.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpizzaminded%2Fdynamite?ref=badge_shield)
+
 
 Work with AWS DynamoDB and Single-Table-Designed tables in your apps.
 
@@ -145,3 +147,6 @@ Nested item cannot have both `@Item` and `@NestedItem` annotation.
 ## License 
 
 MIT
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpizzaminded%2Fdynamite.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpizzaminded%2Fdynamite?ref=badge_large)
