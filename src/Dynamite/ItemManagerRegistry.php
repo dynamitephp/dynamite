@@ -6,20 +6,20 @@ namespace Dynamite;
 
 use Dynamite\Exception\DynamiteException;
 
-class DynamiteRegistry
+class ItemManagerRegistry
 {
 
     /**
-     * @var Dynamite[]
+     * @var ItemManager[]
      * @psalm-var array<string,Dynamite>
      */
     protected array $managedTables = [];
 
     /**
      * @param string $name
-     * @param Dynamite $instance
+     * @param ItemManager $instance
      */
-    public function addManagedTable(string $name, Dynamite $instance)
+    public function addManagedTable(string $name, ItemManager $instance)
     {
         $this->managedTables[$name] = $instance;
     }

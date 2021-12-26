@@ -7,7 +7,7 @@ namespace Dynamite\ServiceProvider;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
 use Dynamite\Dynamite;
-use Dynamite\DynamiteRegistry;
+use Dynamite\ItemManagerRegistry;
 use Dynamite\Mapping\CachedItemMappingReader;
 use Dynamite\Mapping\ItemMappingReader;
 use Dynamite\TableConfiguration;
@@ -94,9 +94,9 @@ class DynamiteProvider implements ServiceProviderInterface, ParentProviderInterf
             $output[$instanceServiceId] = $instanceDef;
         }
 
-        $output[DynamiteRegistry::class] = static function (ContainerInterface $container) use ($instanceServiceIds): DynamiteRegistry {
+        $output[ItemManagerRegistry::class] = static function (ContainerInterface $container) use ($instanceServiceIds): ItemManagerRegistry {
 
-            $registry = new DynamiteRegistry();
+            $registry = new ItemManagerRegistry();
 
             foreach ($instanceServiceIds as $instanceName => $instanceServiceId) {
                 $registry->addManagedTable($instanceName, $container->get($instanceServiceId));

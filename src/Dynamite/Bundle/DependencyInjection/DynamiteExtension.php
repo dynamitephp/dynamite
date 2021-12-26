@@ -5,7 +5,7 @@ namespace Dynamite\Bundle\DependencyInjection;
 
 
 use Dynamite\Dynamite;
-use Dynamite\DynamiteRegistry;
+use Dynamite\ItemManagerRegistry;
 use Dynamite\TableConfiguration;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,7 +30,7 @@ class DynamiteExtension extends Extension
         $configObject = new Configuration();
         $config = $this->processConfiguration($configObject, $configs);
 
-        $registryDefinition = new Definition(DynamiteRegistry::class);
+        $registryDefinition = new Definition(ItemManagerRegistry::class);
         $annotationReaderRef = new Reference($config['annotation_reader_id']);
 
         foreach ($config['tables'] as $instanceName => $instanceConfiguration) {

@@ -13,17 +13,18 @@ use Dynamite\Mapping\ItemMappingReader;
 use Psr\Log\LoggerInterface;
 
 /**
+ * @TODO: this should be called ItemManager, or something similar
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
-class Dynamite
+class ItemManager
 {
 
     /**
      * Current lib version in semver format
      * @var string
      */
-    public const VERSION = '0.0.2';
+    public const VERSION = '0.0.4';
 
     /**
      * Configuration for all items in your projects
