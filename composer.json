@@ -4,10 +4,10 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "php": ">= 7.4 | 8",
+        "php": ">= 7.4 | 8 | 8.1",
         "guzzlehttp/guzzle": "> 7",
         "doctrine/annotations": "^1.13",
-        "aws/aws-sdk-php": "^3.183",
+        "aws/aws-sdk-php": "^3.216",
         "symfony/polyfill-php80": "^1.23"
     },
     "require-dev": {
