@@ -7,7 +7,6 @@ namespace Dynamite\Exception;
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
- * @final
  */
 class ConfigurationException extends DynamiteException
 {
