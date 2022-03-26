@@ -6,28 +6,28 @@ namespace Dynamite;
 use Dynamite\Exception\DynamiteException;
 
 /**
+ * Holds basic information about DynamoDB table structure.
+ *
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
-class TableConfiguration
+class TableSchema
 {
-    protected string $tableName;
-    protected string $partitionKeyName;
-    protected string $sortKeyName;
-    protected array $indexes = [];
 
+    /**
+     * @param string $tableName
+     * @param string $partitionKeyName
+     * @param string $sortKeyName
+     * @param array $indexes
+     * @psalm-param array<string, array{pk: string, sk: string|null}> $indexes
+     */
     public function __construct(
-        string $tableName,
-        string $partitionKeyName = 'pk',
-        string $sortKeyName = 'sk',
-        array $indexes = []
+        protected string $tableName,
+        protected string $partitionKeyName = 'pk',
+        protected string $sortKeyName = 'sk',
+        protected array $indexes = []
     )
-    {
-        $this->tableName = $tableName;
-        $this->partitionKeyName = $partitionKeyName;
-        $this->sortKeyName = $sortKeyName;
-        $this->indexes = $indexes;
-    }
+    {}
 
     /**
      * @return string
@@ -53,6 +53,9 @@ class TableConfiguration
         return $this->sortKeyName;
     }
 
+    /**
+     * @throws DynamiteException
+     */
     public function getIndexPrimaryKeyPair(string $indexName): array
     {
         if (!isset($this->indexes[$indexName])) {
