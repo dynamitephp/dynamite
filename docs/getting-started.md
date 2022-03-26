@@ -1,15 +1,26 @@
 # Getting Started with Dynamite
 
-## 1. Installation and configuration
+## Installation and configuration
 
 Use composer to download a package:
 
 ``composer require dynamite/dynamite``
 
+Create new instance of `Dynamite\ItemManagerRegistryFactory` class and wire them with some services:
+
+```php
+$dynamiteFactory = new Dynamite\ItemManagerRegistryFactory();
+
+// Logger (for logging purposes)
+$dynamiteFactory->withLogger($myLogger);
+
+// doctrine/annotations Reader (for reading mapping from annotations, Doctrine ORM style):
+$dynamiteFactory->withAnnotationReader($myReader);
+```
+
 Then prepare your table(s) schema, and put them into a `TableSchema` object:
 
-
-````php
+```php
 $tableSchema = new \Dynamite\TableSchema(
     'MyProjectSingleTableName', // DynamoDB Table name (not ARN or something, a name!)
     'pk', // Partition Key
@@ -19,11 +30,38 @@ $tableSchema = new \Dynamite\TableSchema(
         'GSI2' => ['pk' => 'gsi2pk', 'sk' => 'gsi2sk']
     ]   
 );
+```
+
+We are almost home! We need to define a Item Manager:
+
+```php
+/** @var \Dynamite\ItemManagerRegistryFactory $dynamiteFactory **/
+/** @var \Dynamite\TableSchema $tableSchema **/
+/** @var \Aws\DynamoDb\DynamoDbClient $myDynamoDbClient **/
+
+// At this moment leave this array empty, we will come back here later 
+$managedItems = [];
+
+$dynamiteFactory->addNativeDynamoDbClientItemManager(
+    $myDynamoDbClient,
+    $tableSchema,
+    $managedItems
+);
+```
+
+Build an instance of `ItemManagerRegistry`:
+
+```php
+/** @var \Dynamite\ItemManagerRegistryFactory $dynamiteFactory **/
+
+$itemManagerRegistry = $dynamiteFactory->build();
+```
 
 
-````
+And we are done! Next step is to configure a new item. 
 
-## 3. Creating an Item
+
+## Creating an Item
 
 Start with configuring some annotations at class level:
 
