@@ -1,27 +1,24 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Dynamite;
-
 
 use Dynamite\Exception\DynamiteException;
 
 class ItemManagerRegistry
 {
-
     /**
      * @var ItemManager[]
-     * @psalm-var array<string,Dynamite>
      */
     protected array $managedTables = [];
 
     /**
-     * @param string $name
      * @param ItemManager $instance
      */
-    public function addManagedTable(string $name, ItemManager $instance)
+    public function addManagedTable(ItemManager $instance): void
     {
-        $this->managedTables[$name] = $instance;
+        $this->managedTables[] = $instance;
     }
 
     public function getItemRepositoryFor(string $fqcn): ItemRepository
