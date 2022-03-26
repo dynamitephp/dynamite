@@ -1,12 +1,27 @@
 # Getting Started with Dynamite
 
-## 1. Install `dynamite/dynamite`
+## 1. Installation and configuration
 
-@TODO
+Use composer to download a package:
 
-## 2. Configure `Dynamite` class
+``composer require dynamite/dynamite``
 
-@TODO
+Then prepare your table(s) schema, and put them into a `TableSchema` object:
+
+
+````php
+$tableSchema = new \Dynamite\TableSchema(
+    'MyProjectSingleTableName', // DynamoDB Table name (not ARN or something, a name!)
+    'pk', // Partition Key
+    'sk',  // Sort Key Name
+    [ // GSI/LSI indexes (optional)
+        'GSI1' => ['pk' => 'gsi1pk', 'sk' => 'gsi1sk'],
+        'GSI2' => ['pk' => 'gsi2pk', 'sk' => 'gsi2sk']
+    ]   
+);
+
+
+````
 
 ## 3. Creating an Item
 
