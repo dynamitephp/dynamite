@@ -26,6 +26,11 @@ class ItemSerializer
             $attrName = $attribute->getName();
             $propertyReflection = $reflectionClass->getProperty($propertyName);
             $propertyReflection->setAccessible(true);
+
+            if (!$propertyReflection->isInitialized($item)) {
+                throw SerializationException::propIsNotInitialized($propertyName, get_class($item));
+            }
+
             $propertyValue = $propertyReflection->getValue($item);
 
             if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
