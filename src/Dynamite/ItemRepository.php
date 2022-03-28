@@ -179,16 +179,18 @@ class ItemRepository
             }
         }
 
-        $partitionKeyValue = $this->fillPrimaryKeyFormat(
+        $partitionKeyValue = $this->keyFormatResolver->resolve(
             $partitionKeyFormat,
-            $primaryKeyPlaceholders
+            $this->itemMapping,
+            $serializedValues
         );
 
         $sortKeyValue = null;
         if ($this->itemMapping->getSortKeyFormat() !== null) {
-            $sortKeyValue = $this->fillPrimaryKeyFormat(
+            $sortKeyValue = $this->keyFormatResolver->resolve(
                 $this->itemMapping->getSortKeyFormat(),
-                $primaryKeyPlaceholders
+                $this->itemMapping,
+                $serializedValues
             );
         }
 
