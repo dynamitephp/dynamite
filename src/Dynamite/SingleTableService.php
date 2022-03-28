@@ -20,33 +20,23 @@ use Psr\Log\LoggerInterface;
  */
 class SingleTableService
 {
-
-    private Marshaler $marshaler;
-    private TableConfiguration $table;
-    private DynamoDbClient $client;
-    protected LoggerInterface $logger;
-
     public function __construct(
-        DynamoDbClient $client,
-        TableConfiguration $table,
-        Marshaler $marshaler,
-        LoggerInterface $logger
+        protected DynamoDbClient $client,
+        protected TableSchema $schema,
+        protected Marshaler $marshaler,
+        protected LoggerInterface $logger
     )
     {
-        $this->client = $client;
-        $this->table = $table;
-        $this->marshaler = $marshaler;
-        $this->logger = $logger;
     }
 
 
     public function putItem(string $partitionKeyVal, array $item, ?string $sortKeyValue = null): void
     {
-        $item[$this->table->getPartitionKeyName()] = $partitionKeyVal;
-        $item[$this->table->getSortKeyName()] = $sortKeyValue;
+        $item[$this->schema->getPartitionKeyName()] = $partitionKeyVal;
+        $item[$this->schema->getSortKeyName()] = $sortKeyValue;
 
         $putItemRequest = [
-            'TableName' => $this->table->getTableName(),
+            'TableName' => $this->schema->getTableName(),
             'Item' => $this->marshaler->marshalItem($item)
         ];
 
@@ -60,18 +50,18 @@ class SingleTableService
      */
     public function simpleQuery(string $pk, ?string $sk = null, ?string $index = null): QueryResponse
     {
-        $partitionKeyAttr = $this->table->getPartitionKeyName();
-        $sortKeyAttr = $this->table->getSortKeyName();
+        $partitionKeyAttr = $this->schema->getPartitionKeyName();
+        $sortKeyAttr = $this->schema->getSortKeyName();
 
         if ($index !== null) {
-            [$partitionKeyAttr, $sortKeyAttr] = $this->table->getIndexPrimaryKeyPair($index);
+            [$partitionKeyAttr, $sortKeyAttr] = $this->schema->getIndexPrimaryKeyPair($index);
         }
 
-        $tableName = $this->table->getTableName();
+        $tableName = $this->schema->getTableName();
         $debugMessage = sprintf('Executing Query operation on table "%s" ', $tableName);
 
         $queryRequest = [
-            'TableName' => $this->table,
+            'TableName' => $this->schema,
             'KeyConditionExpression' => '#pk = :pk',
             'ExpressionAttributeNames' => [
                 '#pk' => $partitionKeyAttr
@@ -101,7 +91,7 @@ class SingleTableService
 
     public function rawQuery(QueryRequest $request): QueryResponse
     {
-        $request->withTableName($this->table->getTableName());
+        $request->withTableName($this->schema->getTableName());
 
         return new QueryResponse(
             $this->client->query($request->toArray())->toArray(),
@@ -109,24 +99,30 @@ class SingleTableService
         );
     }
 
-    public function getTableConfiguration(): TableConfiguration
+    /**
+     * @TODO: rename to getTableSchema
+     * @TODO: is this really required to be exposed?
+     *
+     * @return TableSchema
+     */
+    public function getTableConfiguration(): TableSchema
     {
-        return $this->table;
+        return $this->schema;
     }
 
 
     public function getItem(string $pk, ?string $sk = null): ?array
     {
         $key = [
-            $this->getTableConfiguration()->getPartitionKeyName() => $this->marshaler->marshalValue($pk)
+            $this->schema->getPartitionKeyName() => $this->marshaler->marshalValue($pk)
         ];
 
         if ($sk !== null) {
-            $key[$this->getTableConfiguration()->getSortKeyName()] = $this->marshaler->marshalValue($sk);
+            $key[$this->schema->getSortKeyName()] = $this->marshaler->marshalValue($sk);
         }
 
         $request = [
-            'TableName' => $this->getTableConfiguration()->getTableName(),
+            'TableName' => $this->schema->getTableName(),
             'Key' => $key
         ];
 
@@ -149,7 +145,7 @@ class SingleTableService
     )
     {
         $writeRequestBatch = new WriteRequestBatch($this->client, [
-            'table' => $this->table->getTableName(),
+            'table' => $this->schema->getTableName(),
             'error' => function (AwsException $exception) {
                 /**
                  * By default it does not throw all exceptions
@@ -161,14 +157,14 @@ class SingleTableService
         foreach ($itemsToPut as $item) {
             $writeRequestBatch->put(
                 $this->marshaler->marshalItem($item),
-                $this->table->getTableName()
+                $this->schema->getTableName()
             );
         }
 
         foreach ($itemsToDelete as $item) {
             $writeRequestBatch->delete(
                 $this->marshaler->marshalItem($item),
-                $this->table->getTableName()
+                $this->schema->getTableName()
             );
         }
 
