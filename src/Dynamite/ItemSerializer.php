@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Dynamite;
@@ -10,7 +11,6 @@ use Dynamite\Exception\DynamiteException;
 use Dynamite\Exception\SerializationException;
 use Dynamite\Mapping\ItemMapping;
 use ReflectionClass;
-
 
 /**
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
@@ -45,7 +45,6 @@ class ItemSerializer
             }
 
             if ($attribute instanceof NestedValueObjectAttribute) {
-
                 if ($attribute->isCollection()) {
                     if (!is_array($propertyValue)) {
                         throw SerializationException::propIsNotArray($propertyName, get_class($item), $propertyValue);
@@ -58,7 +57,6 @@ class ItemSerializer
 
                     $values[$attrName] = $output;
                     continue;
-
                 }
                 $values[$attrName] = $this->nestedValueObjectToScalar($attribute, $propertyValue);
                 continue;
@@ -74,8 +72,8 @@ class ItemSerializer
 
                 throw new DynamiteException('Getting nested items value via annotation not implemented yet');
             }
-
         }
+
         return $values;
     }
 
@@ -106,7 +104,6 @@ class ItemSerializer
 
                 $propertyReflection->setValue($instantiatedObject, $dateTime);
                 continue;
-
             }
 
             if ($attribute instanceof NestedValueObjectAttribute) {
@@ -140,16 +137,14 @@ class ItemSerializer
 
                 throw new DynamiteException('Deserializing nested items value via annotation not implemented yet');
             }
-
         }
 
         return $instantiatedObject;
     }
 
     /**
-     * @param NestedValueObjectAttribute $nestedVO
-     * @param object $propValue
-     * @return string|integer|bool|null
+     * @return string|int|bool|null
+     *
      * @throws \ReflectionException
      */
     protected function nestedValueObjectToScalar(NestedValueObjectAttribute $nestedVO, object $propValue)
@@ -162,9 +157,8 @@ class ItemSerializer
     }
 
     /**
-     * @param NestedValueObjectAttribute $nestedVO
-     * @param string|integer|bool|null $propValue
-     * @return object
+     * @param string|int|bool|null $propValue
+     *
      * @throws \ReflectionException
      */
     protected function scalarToNestedValueObject(NestedValueObjectAttribute $nestedVO, $propValue): object
