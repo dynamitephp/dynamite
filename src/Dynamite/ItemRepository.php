@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Dynamite;
@@ -40,11 +41,11 @@ class ItemRepository
      * When passing a string to $partitionKey or $sortKey, Dynamite will pass them to DB directly.
      * But when passing an array, it will build an key using data from SortKeyFormat and PrimaryKeyFormat annotations.
      * Remember to pass all "fragments" of key in array in given format:
-     * [ fieldName => value ]
+     * [ fieldName => value ].
      *
      * @param array<string, string>|string $partitionKey
      * @param array<string, string>|string $sortKey
-     * @return object
+     *
      * @throws ItemNotFoundException
      */
     public function getItem($partitionKey, $sortKey = null): object
@@ -81,19 +82,15 @@ class ItemRepository
 
         $item = $this->singleTableService->getItem($partitionKey, $sortKey);
         if ($item === null) {
-            throw new ItemNotFoundException(
-                sprintf('Could not find item with PK "%s" and SK "%s"', $partitionKey, $sortKey)
-            );
+            throw new ItemNotFoundException(sprintf('Could not find item with PK "%s" and SK "%s"', $partitionKey, $sortKey));
         }
 
         return $this->itemSerializer->hydrateObject($this->itemName, $this->itemMapping, $item);
     }
 
     /**
-     * @param string $patternName
-     * @param int|null $limit
-     * @param array|null $lastEvaluatedKey
      * @return object|object[]|QueryIterator
+     *
      * @throws \Exception
      */
     public function executeAccessPattern(string $patternName, ?int $limit = null, ?array $lastEvaluatedKey = null)
@@ -109,7 +106,6 @@ class ItemRepository
                 if ($lastEvaluatedKey !== null) {
                     $request->withExclusiveStartKey($lastEvaluatedKey);
                 }
-
 
                 $request
                     ->withKeyConditionExpression('#pk = :pk')
@@ -136,7 +132,6 @@ class ItemRepository
                             '#pk',
                             $indexPrimaryKeyPair[0]
                         );
-
                 }
 
                 return $this->query($request);
@@ -147,7 +142,6 @@ class ItemRepository
     }
 
     /**
-     * @param object $item
      * @throws AwsException
      * @throws ItemRepositoryException
      * @throws DynamiteException
@@ -235,10 +229,10 @@ class ItemRepository
                 );
 
                 $batch[] = $duplicatedItem;
-
             }
 
             $this->singleTableService->writeRequestBatch($batch);
+
             return;
         }
 
@@ -248,7 +242,6 @@ class ItemRepository
             $sortKeyValue
         );
     }
-
 
     public function query(QueryRequest $request): QueryIterator
     {
@@ -278,11 +271,11 @@ class ItemRepository
     {
         $values = array_values($placeholders);
 
-        if($transform === 'UPPER') {
+        if ($transform === 'UPPER') {
             $values = array_map('mb_strtoupper', $values);
         }
 
-        if($transform === 'LOWER') {
+        if ($transform === 'LOWER') {
             $values = array_map('mb_strtolower', $values);
         }
 
