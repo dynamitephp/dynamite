@@ -8,6 +8,10 @@ use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
 use Doctrine\Common\Annotations\Reader;
 use Dynamite\Mapping\ItemMappingReader;
+use Dynamite\PrimaryKey\Filter\LowercaseFilter;
+use Dynamite\PrimaryKey\Filter\Md5Filter;
+use Dynamite\PrimaryKey\Filter\UppercaseFilter;
+use Dynamite\PrimaryKey\Filter\UppercaseFirstFilter;
 use Dynamite\PrimaryKey\KeyFormatResolver;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +51,10 @@ class ItemManagerRegistryFactory
         $itemSerializer = new ItemSerializer();
         $marshaler = $this->marshaler ?? new Marshaler();
         $keyFormatResolver = new KeyFormatResolver();
+        $keyFormatResolver->addFilter('md5', new Md5Filter());
+        $keyFormatResolver->addFilter('lower', new LowercaseFilter());
+        $keyFormatResolver->addFilter('upper', new UppercaseFilter());
+        $keyFormatResolver->addFilter('ucfirst', new UppercaseFirstFilter());
 
         $registry = new ItemManagerRegistry();
 
