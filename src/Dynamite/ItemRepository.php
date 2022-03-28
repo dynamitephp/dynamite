@@ -8,6 +8,7 @@ use Dynamite\Exception\DynamiteException;
 use Dynamite\Exception\ItemNotFoundException;
 use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
+use Dynamite\PrimaryKey\KeyFormatResolver;
 use Dynamite\Repository\AccessPatternsProviderInterface;
 use Dynamite\Typed\QueryRequest;
 use function str_replace;
@@ -24,17 +25,12 @@ class ItemRepository
     private array $accessPatterns = [];
 
     public function __construct(
-        SingleTableService $singleTableService,
-        string $itemName,
-        ItemMapping $itemMapping,
-        ItemSerializer $itemSerializer
-    )
-    {
-        $this->singleTableService = $singleTableService;
-        $this->itemName = $itemName;
-        $this->itemMapping = $itemMapping;
-        $this->itemSerializer = $itemSerializer;
-
+        protected SingleTableService $singleTableService,
+        protected string $itemName,
+        protected ItemMapping $itemMapping,
+        protected ItemSerializer $itemSerializer,
+        protected KeyFormatResolver $keyFormatResolver
+    ) {
         if ($this instanceof AccessPatternsProviderInterface) {
             $this->accessPatterns = $this->registerAccessPatterns();
         }
