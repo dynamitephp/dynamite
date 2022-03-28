@@ -194,7 +194,8 @@ class ItemRepository
             );
         }
 
-        $serializedValues['objectType'] = $this->itemMapping->getObjectType();
+        $objectTypeAttr = $this->singleTableService->getTableConfiguration()->getObjectTypeAttrName();
+        $serializedValues[$objectTypeAttr] = $this->itemMapping->getObjectType();
 
         $duplicates = $this->itemMapping->getDuplicates();
 

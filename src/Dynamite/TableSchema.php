@@ -25,7 +25,8 @@ class TableSchema
         protected string $tableName,
         protected string $partitionKeyName = 'pk',
         protected string $sortKeyName = 'sk',
-        protected array $indexes = []
+        protected array $indexes = [],
+        protected string $objectTypeAttrName = 'objectType'
     )
     {}
 
@@ -66,6 +67,13 @@ class TableSchema
             $this->indexes[$indexName]['pk'],
             $this->indexes[$indexName]['sk'] ?? null,
         ];
+    }
 
+    /**
+     * @return string
+     */
+    public function getObjectTypeAttrName(): string
+    {
+        return $this->objectTypeAttrName;
     }
 }
