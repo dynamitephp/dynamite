@@ -19,6 +19,7 @@ use Dynamite\Exception\ConfigurationException;
 #[\Attribute(flags: \Attribute::TARGET_PROPERTY)]
 class Attribute extends AbstractAttribute
 {
+    public const TYPE_STRING = 'string';
     public const TYPE_TIMESTAMP = 'timestamp';
     public const TYPE_DATETIME = 'datetime';
 
@@ -56,7 +57,7 @@ class Attribute extends AbstractAttribute
     protected function assertType(string $type)
     {
         $allowedValues = [
-            'string',
+            self::TYPE_STRING,
             'string[]',
             'number',
             'number[]',
