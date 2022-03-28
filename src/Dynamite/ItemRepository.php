@@ -167,6 +167,10 @@ class ItemRepository
             throw ItemRepositoryException::objectNotSupported(get_class($item), $this->itemName);
         }
 
+        if (count($this->itemMapping->getPropertiesMapping()) === 0) {
+            throw ItemRepositoryException::noPropsInItem(get_class($item));
+        }
+
         $serializedValues = $this->itemSerializer->serialize($item, $this->itemMapping);
         $partitionKeyFormat = $this->itemMapping->getPartitionKeyFormat();
         $primaryKeyPlaceholders = [];

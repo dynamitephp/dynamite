@@ -18,5 +18,8 @@ class ItemRepositoryException extends DynamiteException
         return new self(sprintf('Given class "%s" is not managed by Dynamite.', $itemClass));
     }
 
-
+    public static function noPropsInItem(string $itemClass): self
+    {
+        return new self(sprintf('Given class "%s" does not have any properties that Dynamite can process.', $itemClass));
+    }
 }
