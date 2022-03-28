@@ -10,6 +10,7 @@ use Dynamite\Exception\ItemNotFoundException;
 use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\User;
+use Dynamite\PrimaryKey\KeyFormatResolver;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +37,8 @@ class ItemRepositoryTest extends TestCase
             $stsMock,
             Product::class,
             $this->createItemMappingReader()->getMappingFor(Product::class),
-            $this->createItemSerializer()
+            $this->createItemSerializer(),
+            $this->createKeyFormatResolver()
         );
 
 
@@ -72,7 +74,8 @@ class ItemRepositoryTest extends TestCase
             ExchangeRate::class,
             $this->createItemMappingReader()
                 ->getMappingFor(ExchangeRate::class),
-            $this->createItemSerializer()
+            $this->createItemSerializer(),
+            $this->createKeyFormatResolver()
         );
 
 
@@ -142,7 +145,9 @@ class ItemRepositoryTest extends TestCase
             User::class,
             $this->createItemMappingReader()
                 ->getMappingFor(User::class),
-            $this->createItemSerializer()
+            $this->createItemSerializer(),
+            $this->createKeyFormatResolver()
+
         );
 
 
