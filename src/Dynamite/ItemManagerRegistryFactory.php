@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dynamite;
 
-
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
 use Doctrine\Common\Annotations\Reader;
@@ -27,8 +26,6 @@ class ItemManagerRegistryFactory
     protected bool $build = false;
 
     /**
-     * @param DynamoDbClient $dynamoDbClient
-     * @param TableSchema $tableSchema
      * @param string[] $managedItems
      * @psalm-param class-string[] $managedItems
      */
@@ -36,22 +33,20 @@ class ItemManagerRegistryFactory
         DynamoDbClient $dynamoDbClient,
         TableSchema $tableSchema,
         array $managedItems,
-    )
-    {
+    ) {
         $this->itemManagers[] = [
             $dynamoDbClient,
             $tableSchema,
-            $managedItems
+            $managedItems,
         ];
-
     }
-
 
     public function build(): ItemManagerRegistry
     {
         $itemMappingReader = new ItemMappingReader($this->annotationReader);
         $itemSerializer = new ItemSerializer();
         $marshaler = $this->marshaler ?? new Marshaler();
+        $keyFormatResolver = new KeyFormatResolver();
 
         $registry = new ItemManagerRegistry();
 
@@ -66,6 +61,7 @@ class ItemManagerRegistryFactory
                     $itemMappingReader,
                     $managedItems,
                     $itemSerializer,
+                    $keyFormatResolver,
                     $this->logger,
                     $marshaler
                 )
@@ -78,21 +74,21 @@ class ItemManagerRegistryFactory
     public function withLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
+
         return $this;
     }
-
 
     public function withMarshaler(Marshaler $marshaler): self
     {
         $this->marshaler = $marshaler;
+
         return $this;
     }
 
     public function withAnnotationReader(Reader $reader): self
     {
         $this->annotationReader = $reader;
+
         return $this;
     }
-
-
 }
