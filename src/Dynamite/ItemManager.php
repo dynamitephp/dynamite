@@ -43,9 +43,7 @@ class ItemManager
         protected KeyFormatResolver $keyFormatResolver,
         protected ?LoggerInterface $logger = null,
         protected ?Marshaler $marshaler = null,
-    )
-    {
-        $this->itemSerializer = new ItemSerializer();
+    ) {
         $this->singleTableService = new SingleTableService(
             $this->client,
             $this->tableSchema,
