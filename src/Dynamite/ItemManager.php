@@ -6,7 +6,6 @@ namespace Dynamite;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Marshaler;
-use Doctrine\Common\Annotations\Reader;
 use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
 use Dynamite\Mapping\ItemMappingReader;
@@ -19,7 +18,6 @@ use Psr\Log\LoggerInterface;
  */
 class ItemManager
 {
-
     /**
      * Configuration for all items managed by given instance.
      *
@@ -52,10 +50,6 @@ class ItemManager
         );
     }
 
-    /**
-     * @param string $itemClass
-     * @return ItemRepository
-     */
     public function getItemRepository(string $itemClass): ItemRepository
     {
         if (!$this->manages($itemClass)) {
@@ -63,7 +57,7 @@ class ItemManager
         }
 
         if (!isset($this->itemMappings[$itemClass])) {
-            $this->itemMappings[$itemClass] = $this->itemMappingReader->getMappingFor($itemClass);
+            $this->itemMappings[$itemClass] = $this->mappingReader->getMappingFor($itemClass);
         }
 
         if (!isset($this->itemRepositories[$itemClass])) {
@@ -72,7 +66,6 @@ class ItemManager
 
             $customRepositoryClass = $mapping->getCustomItemRepositoryClass();
             if ($customRepositoryClass !== null) {
-
                 $extends = class_parents($customRepositoryClass);
                 if (!isset($extends[ItemRepository::class])) {
                     throw new ItemRepositoryException('Classs "%s" cannot be used as a Item repository as it does not extend "%s" class.', $customRepositoryClass, $classToInstantiate);
@@ -93,9 +86,6 @@ class ItemManager
         return $this->itemRepositories[$itemClass];
     }
 
-    /**
-     * @return SingleTableService
-     */
     public function getSingleTableService(): SingleTableService
     {
         return $this->singleTableService;
