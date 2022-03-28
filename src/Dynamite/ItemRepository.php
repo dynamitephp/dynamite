@@ -168,6 +168,11 @@ class ItemRepository
 
         $serializedValues = $this->itemSerializer->serialize($item, $this->itemMapping);
         $partitionKeyFormat = $this->itemMapping->getPartitionKeyFormat();
+        /**
+         * Object props wrapped with {} as keys, props values as a values.
+         *
+         * @deprecated
+         */
         $primaryKeyPlaceholders = [];
 
         foreach ($serializedValues as $attr => $value) {
@@ -270,6 +275,9 @@ class ItemRepository
         return $this->singleTableService;
     }
 
+    /**
+     * @deprecated in favor of KeyFormatResolver
+     */
     private function fillPrimaryKeyFormat(string $format, array $placeholders, ?string $transform = null): string
     {
         $values = array_values($placeholders);
