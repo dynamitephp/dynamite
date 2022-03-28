@@ -10,6 +10,7 @@ use Doctrine\Common\Annotations\Reader;
 use Dynamite\Exception\ItemRepositoryException;
 use Dynamite\Mapping\ItemMapping;
 use Dynamite\Mapping\ItemMappingReader;
+use Dynamite\PrimaryKey\KeyFormatResolver;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -38,6 +39,7 @@ class ItemManager
         protected ItemMappingReader $mappingReader,
         protected array $managedObjects,
         protected ItemSerializer $itemSerializer,
+        protected KeyFormatResolver $keyFormatResolver,
         protected ?LoggerInterface $logger = null,
         protected ?Marshaler $marshaler = null,
     )
@@ -84,7 +86,8 @@ class ItemManager
                 $this->singleTableService,
                 $itemClass,
                 $mapping,
-                $this->itemSerializer
+                $this->itemSerializer,
+                $this->keyFormatResolver
             );
         }
 
