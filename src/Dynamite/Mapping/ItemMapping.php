@@ -140,7 +140,7 @@ class ItemMapping
         return $this->nestedItems[$propName];
     }
 
-    public function getProperty(string $name)
+    public function getProperty(string $name): AttributeInterface
     {
         return $this->propertiesMapping[$name];
     }
