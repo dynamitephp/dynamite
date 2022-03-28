@@ -18,15 +18,10 @@ use function str_replace;
  */
 class ItemRepository
 {
-    private SingleTableService $singleTableService;
-    private string $itemName;
-    private ItemMapping $itemMapping;
-    private ItemSerializer $itemSerializer;
     /**
      * @var AccessPattern[]
      */
     private array $accessPatterns = [];
-
 
     public function __construct(
         SingleTableService $singleTableService,
