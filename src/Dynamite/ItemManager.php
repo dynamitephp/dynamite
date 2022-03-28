@@ -21,7 +21,8 @@ class ItemManager
 {
 
     /**
-     * Configuration for all items in your projects
+     * Configuration for all items managed by given instance.
+     *
      * @var ItemMapping[]
      */
     protected array $itemMappings = [];
