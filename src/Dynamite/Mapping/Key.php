@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 
+/**
+ * @deprecated - unless i will remind myself why i created this class
+ */
 class Key
 {
 
