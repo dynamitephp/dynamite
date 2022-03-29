@@ -7,6 +7,7 @@ namespace Dynamite;
 use Dynamite\Fixtures\Valid\BankAccount;
 use Dynamite\Fixtures\Valid\CurrencyNestedValueObject;
 use Dynamite\Fixtures\Valid\ExchangeRate;
+use Dynamite\Fixtures\Valid\Php8\Car;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\ProductNutritionNestedItem;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
@@ -16,7 +17,7 @@ class ItemSerializerTest extends TestCase
 {
     use DynamiteTestSuiteHelperTrait;
 
-    public function testObjectSerializationWithNestedItemWithCustomSerializer()
+    public function testObjectSerializationWithNestedItemWithCustomSerializer(): void
     {
         $serializer = $this->createItemSerializer();
         $mappingReader = $this->createItemMappingReader();
@@ -53,7 +54,7 @@ class ItemSerializerTest extends TestCase
     }
 
 
-    public function testObjectSerializationForNestedValueObject()
+    public function testObjectSerializationForNestedValueObject(): void
     {
         $serializer = $this->createItemSerializer();
         $mappingReader = $this->createItemMappingReader();
@@ -73,7 +74,7 @@ class ItemSerializerTest extends TestCase
         self::assertSame($snapshot, $serialized);
     }
 
-    public function testObjectSerializationForNestedValueObjectCollection()
+    public function testObjectSerializationForNestedValueObjectCollection(): void
     {
         $serializer = $this->createItemSerializer();
         $mappingReader = $this->createItemMappingReader();
@@ -99,7 +100,75 @@ class ItemSerializerTest extends TestCase
         self::assertSame($snapshot, $serialized);
     }
 
-    public function testObjectHydrationWithNestedValueObjectCollection()
+    public function testShorteningSerialization(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(Car::class);
+
+        $car = new Car();
+        $car->id = '123456789';
+        $car->firstRegistrationCountry = 'France';
+        $serialized = $serializer->serialize($car, $mapping);
+
+        self::assertSame('FR', $serialized['frc']);
+    }
+
+    public function testShorteningSerializationButAnyShortenerMatches(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(Car::class);
+
+        $car = new Car();
+        $car->id = '123456789';
+        $car->firstRegistrationCountry = 'Poland';
+        $serialized = $serializer->serialize($car, $mapping);
+
+        self::assertSame('Poland', $serialized['frc']);
+    }
+
+    public function testShorteningHydration(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(Car::class);
+
+
+        $data = [
+            'id' => '420',
+            'frc' => 'IT'
+        ];
+
+        /** @var Car $deserialized */
+        $deserialized = $serializer->hydrateObject(Car::class, $mapping, $data);
+
+        self::assertSame('Italy', $deserialized->firstRegistrationCountry);
+    }
+
+    public function testShorteningHydrationButNothingMatches(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(Car::class);
+
+
+        $data = [
+            'id' => '666',
+            'frc' => 'WTF'
+        ];
+
+        /** @var Car $deserialized */
+        $deserialized = $serializer->hydrateObject(Car::class, $mapping, $data);
+
+        self::assertSame('WTF', $deserialized->firstRegistrationCountry);
+    }
+
+    public function testObjectHydrationWithNestedValueObjectCollection(): void
     {
         $serializer = $this->createItemSerializer();
         $mappingReader = $this->createItemMappingReader();
@@ -117,7 +186,7 @@ class ItemSerializerTest extends TestCase
 
 
         /** @var BankAccount $deserialized */
-        $deserialized = $serializer->hydrateObject(BankAccount::class, $mapping,$data );
+        $deserialized = $serializer->hydrateObject(BankAccount::class, $mapping, $data);
 
         self::assertInstanceOf(BankAccount::class, $deserialized);
         self::assertCount(3, $deserialized->getSupportedCurrencies());

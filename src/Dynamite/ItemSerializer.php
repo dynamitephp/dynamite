@@ -34,6 +34,15 @@ class ItemSerializer
             $propertyValue = $propertyReflection->getValue($item);
 
             if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
+                $shorteners = $itemMapping->getShortenersForProp($propertyName);
+
+                foreach ($shorteners as $shortener) {
+                    if ($propertyValue === $shortener->getFrom()) {
+                        $values[$attrName] = $shortener->getTo();
+                        continue 2;
+                    }
+                }
+
                 $values[$attrName] = $propertyValue;
                 continue;
             }
@@ -92,6 +101,15 @@ class ItemSerializer
             $propertyReflection->setAccessible(true);
             $propValue = $data[$attribute->getName()];
             if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
+                $shorteners = $itemMapping->getShortenersForProp($propertyName);
+
+                foreach ($shorteners as $shortener) {
+                    if ($propValue === $shortener->getTo()) {
+                        $propertyReflection->setValue($instantiatedObject, $shortener->getFrom());
+                        continue 2;
+                    }
+                }
+
                 $propertyReflection->setValue($instantiatedObject, $propValue);
                 continue;
             }

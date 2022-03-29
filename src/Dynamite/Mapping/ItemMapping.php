@@ -7,6 +7,7 @@ use Dynamite\Configuration\AttributeInterface;
 use Dynamite\Configuration\DuplicateTo;
 use Dynamite\Configuration\Item;
 use Dynamite\Configuration\NestedItem;
+use Dynamite\Configuration\Shorten;
 use Dynamite\Exception\DynamiteException;
 
 /**
@@ -31,6 +32,11 @@ class ItemMapping
     private array $nestedItems;
 
     /**
+     * @var array<string, Shorten[]>
+     */
+    private array $shorteners = [];
+
+    /**
      * @var DuplicateTo[]
      */
     private array $duplicates;
@@ -41,7 +47,8 @@ class ItemMapping
         array $propertiesMapping,
         ?Key $sortKey = null,
         array $nestedItems = [],
-        array $duplicates = []
+        array $duplicates = [],
+        array $shorteners = [],
     )
     {
         $this->item = $item;
@@ -50,6 +57,7 @@ class ItemMapping
         $this->sortKey = $sortKey;
         $this->nestedItems = $nestedItems;
         $this->duplicates = $duplicates;
+        $this->shorteners = $shorteners;
     }
 
     public function getObjectType(): string
@@ -143,5 +151,14 @@ class ItemMapping
     public function getProperty(string $name): AttributeInterface
     {
         return $this->propertiesMapping[$name];
+    }
+
+    /**
+     * @param string $propName
+     * @return Shorten[]
+     */
+    public function getShortenersForProp(string $propName): array
+    {
+        return $this->shorteners[$propName] ?? [];
     }
 }

@@ -14,6 +14,7 @@ use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
 use Dynamite\Configuration\PartitionKey;
 use Dynamite\Configuration\PartitionKeyFormat;
+use Dynamite\Configuration\Shorten;
 use Dynamite\Configuration\SortKey;
 use Dynamite\Configuration\SortKeyFormat;
 use ReflectionClass;
@@ -91,6 +92,7 @@ class ItemMappingReader
          * Values => Attribute class
          */
         $attributesMapping = [];
+        $shorteners = [];
         $nestedItems = [];
         $partitionKeyAttr = null;
         $sortKeyAttr = null;
@@ -118,6 +120,13 @@ class ItemMappingReader
 
                     $nestedItems[$propertyName] = $nestedItemConfiguration;
                 }
+
+                $shortenerReflections = $propertyReflection->getAttributes(Shorten::class);
+                foreach ($shortenerReflections as $shortenerReflection) {
+                    $shortener = $shortenerReflection->newInstance();
+                    $shorteners[$propertyName][] = $shortener;
+                }
+
 
                 /**
                  * continue to next parameter, as property with any Attribute annotation
@@ -170,7 +179,8 @@ class ItemMappingReader
             $attributesMapping,
             ($sortKeyAttr !== null && $sortKeyFormat !== null ? new Key($sortKeyFormat, $sortKeyAttr) : null),
             $nestedItems,
-            $duplicates
+            $duplicates,
+            $shorteners
         );
 
     }
