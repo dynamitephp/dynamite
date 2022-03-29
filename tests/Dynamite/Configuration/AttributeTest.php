@@ -17,15 +17,6 @@ class AttributeTest extends TestCase
         new Attribute('field', 'tank');
     }
 
-    public function testAttributeCreationWillFailOnMissingName(): void
-    {
-        self::markTestSkipped('To be dropped');
-        $this->expectException(ConfigurationException::class);
-        $this->expectExceptionMessage('Missing "name" property in "Dynamite\Configuration\Attribute" annotation.');
-
-        new Attribute(['type' => 'number']);
-    }
-
     public function testAttributeGetters(): void
     {
         $attr = new Attribute('userAge', 'number');
