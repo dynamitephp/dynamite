@@ -66,10 +66,6 @@ class ItemMappingReaderTest extends TestCase
 
     public function testClassAnnotationsDefinedAsPhp8Attributes(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            self::markTestSkipped('PHP8 is required to test this thing!');
-        }
-
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(AccessToken::class);
 
@@ -81,10 +77,6 @@ class ItemMappingReaderTest extends TestCase
 
     public function testPlainAttributeAnnotationsDefinedAsPhp8Attributes(): void
     {
-        if (PHP_VERSION_ID < 80000) {
-            self::markTestSkipped('PHP8 is required to test this thing!');
-        }
-
         $parser = $this->createItemMappingReader();
         $mapping = $parser->getMappingFor(AccessToken::class);
 
