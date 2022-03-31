@@ -8,7 +8,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Dynamite\ItemSerializer;
 use Dynamite\Mapping\ItemMappingReader;
-use Dynamite\TableConfiguration;
+use Dynamite\PrimaryKey\KeyFormatResolver;
+use Dynamite\TableSchema;
 
 trait  DynamiteTestSuiteHelperTrait
 {
@@ -36,9 +37,14 @@ trait  DynamiteTestSuiteHelperTrait
     }
 
 
+    private function createKeyFormatResolver(): KeyFormatResolver
+    {
+        return new KeyFormatResolver();
+    }
+
     private function getGenericTableConfiguration()
     {
-        return new TableConfiguration('dynamitetest');
+        return new TableSchema('dynamitetest');
     }
 
 }
