@@ -20,10 +20,22 @@ class ItemSerializer
 {
     public function serialize(object $item, ItemMapping $itemMapping): array
     {
+        $output = [];
+        $serializedContent = $this->serializeToPropNames($item, $itemMapping);
+
+        foreach ($serializedContent as $propName => $value) {
+            $attributeName = $itemMapping->getProperty($propName)->getName();
+            $output[$attributeName] = $value;
+        }
+
+        return $output;
+    }
+
+    public function serializeToPropNames(object $item, ItemMapping $itemMapping): array
+    {
         $values = [];
         $reflectionClass = new ReflectionClass($item);
         foreach ($itemMapping->getPropertiesMapping() as $propertyName => $attribute) {
-            $attrName = $attribute->getName();
             $propertyReflection = $reflectionClass->getProperty($propertyName);
             $propertyReflection->setAccessible(true);
 
@@ -38,23 +50,23 @@ class ItemSerializer
 
                 foreach ($shorteners as $shortener) {
                     if ($propertyValue === $shortener->getFrom()) {
-                        $values[$attrName] = $shortener->getTo();
+                        $values[$propertyName] = $shortener->getTo();
                         continue 2;
                     }
                 }
 
-                $values[$attrName] = $propertyValue;
+                $values[$propertyName] = $propertyValue;
                 continue;
             }
 
             if ($attribute instanceof Attribute && $attribute->isDateTimeRelated()) {
                 if ($propertyValue === null) {
-                    $values[$attrName] = $propertyValue;
+                    $values[$propertyName] = $propertyValue;
                     continue;
                 }
 
                 /** @var \DateTimeInterface $propertyValue */
-                $values[$attrName] = $propertyValue->format($attribute->getFormat());
+                $values[$propertyName] = $propertyValue->format($attribute->getFormat());
                 continue;
             }
 
@@ -69,10 +81,10 @@ class ItemSerializer
                         $output[] = $this->nestedValueObjectToScalar($attribute, $val);
                     }
 
-                    $values[$attrName] = $output;
+                    $values[$propertyName] = $output;
                     continue;
                 }
-                $values[$attrName] = $this->nestedValueObjectToScalar($attribute, $propertyValue);
+                $values[$propertyName] = $this->nestedValueObjectToScalar($attribute, $propertyValue);
                 continue;
             }
 
@@ -80,7 +92,7 @@ class ItemSerializer
                 $nestedItemConfiguration = $itemMapping->getNestedItems()[$propertyName];
                 $serializeMethod = $nestedItemConfiguration->getSerializeMethod();
                 if ($serializeMethod !== null) {
-                    $values[$attrName] = $propertyValue->$serializeMethod();
+                    $values[$propertyName] = $propertyValue->$serializeMethod();
                     continue;
                 }
 
