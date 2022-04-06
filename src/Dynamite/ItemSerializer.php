@@ -20,15 +20,8 @@ class ItemSerializer
 {
     public function serialize(object $item, ItemMapping $itemMapping): array
     {
-        $output = [];
         $serializedContent = $this->serializeToPropNames($item, $itemMapping);
-
-        foreach ($serializedContent as $propName => $value) {
-            $attributeName = $itemMapping->getProperty($propName)->getName();
-            $output[$attributeName] = $value;
-        }
-
-        return $output;
+        return $this->propNamesToAttributes($serializedContent, $itemMapping);
     }
 
     public function serializeToPropNames(object $item, ItemMapping $itemMapping): array
@@ -226,5 +219,17 @@ class ItemSerializer
         $valueObjectProp->setValue($valueObjectInstance, $propValue);
 
         return $valueObjectInstance;
+    }
+
+    public function propNamesToAttributes(array $data, ItemMapping $mapping): array
+    {
+        $output = [];
+
+        foreach ($data as $propName => $value) {
+            $attributeName = $mapping->getProperty($propName)->getName();
+            $output[$attributeName] = $value;
+        }
+
+        return $output;
     }
 }
