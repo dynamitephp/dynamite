@@ -148,7 +148,7 @@ class ItemRepository
             throw ItemRepositoryException::noPropsInItem(get_class($item));
         }
 
-        $serializedValues = $this->itemSerializer->serialize($item, $this->itemMapping);
+        $serializedValues = $this->itemSerializer->serializeToPropNames($item, $this->itemMapping);
         $partitionKeyFormat = $this->itemMapping->getPartitionKeyFormat();
         /**
          * Object props wrapped with {} as keys, props values as a values.
@@ -157,8 +157,7 @@ class ItemRepository
          */
         $primaryKeyPlaceholders = [];
 
-        foreach ($serializedValues as $attr => $value) {
-            $property = $this->itemMapping->attributeToProperty($attr);
+        foreach ($serializedValues as $property => $value) {
             if (is_array($value)) {
                 foreach ($value as $valueKey => $val) {
                     if (is_array($val)) {
@@ -187,7 +186,8 @@ class ItemRepository
         }
 
         $objectTypeAttr = $this->singleTableService->getTableConfiguration()->getObjectTypeAttrName();
-        $serializedValues[$objectTypeAttr] = $this->itemMapping->getObjectType();
+        $serializedAttributes = $this->itemSerializer->propNamesToAttributes($serializedValues, $this->itemMapping);
+        $serializedAttributes[$objectTypeAttr] = $this->itemMapping->getObjectType();
 
         $duplicates = $this->itemMapping->getDuplicates();
 
@@ -195,11 +195,11 @@ class ItemRepository
             $tablePkName = $this->singleTableService->getTableConfiguration()->getPartitionKeyName();
             $tableSkName = $this->singleTableService->getTableConfiguration()->getSortKeyName();
 
-            $serializedValues[$tablePkName] = $partitionKeyValue;
-            $serializedValues[$tableSkName] = $sortKeyValue;
+            $serializedAttributes[$tablePkName] = $partitionKeyValue;
+            $serializedAttributes[$tableSkName] = $sortKeyValue;
 
             $batch = [];
-            $batch[] = $serializedValues;
+            $batch[] = $serializedAttributes;
 
             foreach ($duplicates as $duplicate) {
                 $duplicatedItem = [];
@@ -233,7 +233,7 @@ class ItemRepository
 
         $this->singleTableService->putItem(
             $partitionKeyValue,
-            $serializedValues,
+            $serializedAttributes,
             $sortKeyValue
         );
     }
