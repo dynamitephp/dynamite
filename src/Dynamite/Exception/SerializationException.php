@@ -18,4 +18,15 @@ class SerializationException extends DynamiteException
     {
         return new self(sprintf('Cannot serialize an item "%s" as property "%s" is not initialized.', $fqcn, $propName));
     }
+
+    public static function valIsMissingButPropIsNotNullable(string $propName, string $fqcn): SerializationException
+    {
+        return new self(
+            sprintf(
+                'Cannot create an item "%s", as typed property "%s" is not null, but there is no value from DB',
+                $fqcn,
+                $propName
+            )
+        );
+    }
 }

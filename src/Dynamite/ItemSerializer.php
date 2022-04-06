@@ -111,7 +111,27 @@ class ItemSerializer
         foreach ($itemMapping->getPropertiesMapping() as $propertyName => $attribute) {
             $propertyReflection = $reflectionClass->getProperty($propertyName);
             $propertyReflection->setAccessible(true);
-            $propValue = $data[$attribute->getName()];
+
+            $propValue = null;
+            if (array_key_exists($attribute->getName(), $data)) {
+                $propValue = $data[$attribute->getName()];
+            }
+
+            if (
+                $propertyReflection->getType() !== null                 // property is typed
+                && !$propertyReflection->getType()->allowsNull()        // is not nullable
+                && (
+                    !array_key_exists($attribute->getName(), $data)     // nothing received from DB
+                    || (
+                        array_key_exists($attribute->getName(), $data)  // or got something
+                        && $data[$attribute->getName()] === null        // ... but turns out is NULL
+                    )
+                )
+
+            ) {
+                throw SerializationException::valIsMissingButPropIsNotNullable($propertyName, $className);
+            }
+
             if ($attribute instanceof Attribute && !$attribute->isDateTimeRelated()) {
                 $shorteners = $itemMapping->getShortenersForProp($propertyName);
 

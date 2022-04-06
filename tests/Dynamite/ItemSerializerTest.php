@@ -4,12 +4,14 @@ declare(strict_types=1);
 namespace Dynamite;
 
 
+use Dynamite\Exception\SerializationException;
 use Dynamite\Fixtures\Valid\BankAccount;
 use Dynamite\Fixtures\Valid\CurrencyNestedValueObject;
 use Dynamite\Fixtures\Valid\ExchangeRate;
 use Dynamite\Fixtures\Valid\Php8\Car;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\ProductNutritionNestedItem;
+use Dynamite\Fixtures\Valid\UserActivity;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -194,5 +196,40 @@ class ItemSerializerTest extends TestCase
         $vo = $deserialized->getSupportedCurrencies()[0];
         self::assertInstanceOf(CurrencyNestedValueObject::class, $vo);
         self::assertSame('EUR', $vo->getValue());
+    }
+
+    public function testExceptionWillBeThrownWhenSerializerWillAttemptToInjectNullIntoNotNullableProp()
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(UserActivity::class);
+
+        $data = [
+            'userId' => '5',
+            'activityId' => null
+        ];
+
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Cannot create an item "Dynamite\Fixtures\Valid\UserActivity", as typed property "activityId" is not null, but there is no value from DB');
+
+        $serializer->hydrateObject(UserActivity::class, $mapping, $data);
+    }
+
+    public function testExceptionWillBeThrownWhenSerializerWillAttemptToInjectMissingValueIntoNotNullableProp()
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $mapping = $mappingReader->getMappingFor(UserActivity::class);
+
+        $data = [
+           'userId' => '5'
+        ];
+
+        $this->expectException(SerializationException::class);
+        $this->expectExceptionMessage('Cannot create an item "Dynamite\Fixtures\Valid\UserActivity", as typed property "activityId" is not null, but there is no value from DB');
+
+        $serializer->hydrateObject(UserActivity::class, $mapping, $data);
     }
 }
