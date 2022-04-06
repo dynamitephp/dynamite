@@ -219,16 +219,16 @@ class ItemRepository
                     }
                 }
 
-                $duplicatedItem[$tablePkName] = $this->fillPrimaryKeyFormat(
+                $duplicatedItem[$tablePkName] = $this->keyFormatResolver->resolve(
                     $duplicate->getPartitionKeyFormat(),
-                    $primaryKeyPlaceholders,
-                    $duplicate->transform
+                    $this->itemMapping,
+                    $duplicatedItem
                 );
 
-                $duplicatedItem[$tableSkName] = $this->fillPrimaryKeyFormat(
+                $duplicatedItem[$tableSkName] = $this->keyFormatResolver->resolve(
                     $duplicate->getSortKeyFormat(),
-                    $primaryKeyPlaceholders,
-                    $duplicate->transform
+                    $this->itemMapping,
+                    $duplicatedItem
                 );
 
                 $batch[] = $duplicatedItem;
