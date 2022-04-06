@@ -126,11 +126,15 @@ class ItemRepositoryTest extends TestCase
                     ],
                     [
                         'id' => '1',
+                        'email' => 'mickey@example.com',
+                        'username' => 'mickey',
                         'pk' => 'UDATA#mickey@example.com',
                         'sk' => 'UDATA'
                     ],
                     [
                         'id' => '1',
+                        'email' => 'mickey@example.com',
+                        'username' => 'mickey',
                         'pk' => 'UDATA#mickey',
                         'sk' => 'UDATA'
                     ]
