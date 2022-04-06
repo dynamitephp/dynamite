@@ -69,6 +69,7 @@ class ItemSerializerTest extends TestCase
 
         $snapshot = [
             'fr' => 'CZK',
+            'dt' => null,
             'to' => 'PLN'
         ];
 

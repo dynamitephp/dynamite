@@ -31,6 +31,11 @@ class ExchangeRate
     private CurrencyNestedValueObject $from;
 
     /**
+     * @Dynamite\Attribute(name="dt", type="string")
+     */
+    private $date;
+
+    /**
      * @Dynamite\NestedValueObjectAttribute(name="to", type="\Dynamite\Fixtures\Valid\CurrencyNestedValueObject", property="value")
      * @var CurrencyNestedValueObject
      */
