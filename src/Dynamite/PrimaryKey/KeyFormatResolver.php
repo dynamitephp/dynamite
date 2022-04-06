@@ -32,8 +32,7 @@ class KeyFormatResolver
             }
 
             $attribute = $mapping->getProperty($propName);
-            $attributeName = $attribute->getName();
-            $valueToInterpolate = $values[$attributeName];
+            $valueToInterpolate = $values[$propName];
 
             foreach ($filters as $filter) {
                 if(!isset($this->filters[$filter])) {
