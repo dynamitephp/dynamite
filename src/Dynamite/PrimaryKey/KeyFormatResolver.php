@@ -35,7 +35,7 @@ class KeyFormatResolver
             $valueToInterpolate = $values[$propName];
 
             foreach ($filters as $filter) {
-                if(!isset($this->filters[$filter])) {
+                if (!isset($this->filters[$filter])) {
                     throw FormatException::filterNotFound($filter);
                 }
 
@@ -47,8 +47,6 @@ class KeyFormatResolver
             }
 
             $format = str_replace($matches[0][$key], $valueToInterpolate, $format);
-
-
         }
 
         return $format;
