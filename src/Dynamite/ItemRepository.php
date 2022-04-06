@@ -52,15 +52,11 @@ class ItemRepository
     {
         if (is_array($partitionKey)) {
             $pkFormat = $this->itemMapping->getPartitionKeyFormat();
-            $pkPlaceholders = [];
 
-            foreach ($partitionKey as $key => $val) {
-                $pkPlaceholders[sprintf('{%s}', $key)] = $val;
-            }
-
-            $partitionKey = $this->fillPrimaryKeyFormat(
+            $partitionKey = $this->keyFormatResolver->resolve(
                 $pkFormat,
-                $pkPlaceholders
+                $this->itemMapping,
+                $partitionKey
             );
         }
 
@@ -68,15 +64,11 @@ class ItemRepository
             $sortKey = $this->itemMapping->getSortKeyFormat();
         } elseif (is_array($sortKey)) {
             $skFormat = $this->itemMapping->getSortKeyFormat();
-            $skPlaceholders = [];
 
-            foreach ($sortKey as $key => $val) {
-                $skPlaceholders[sprintf('{%s}', $key)] = $val;
-            }
-
-            $sortKey = $this->fillPrimaryKeyFormat(
+            $sortKey = $this->keyFormatResolver->resolve(
                 $skFormat,
-                $skPlaceholders
+                $this->itemMapping,
+                $sortKey
             );
         }
 
