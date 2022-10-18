@@ -214,13 +214,13 @@ class ItemRepository
                 $duplicatedItem[$tablePkName] = $this->keyFormatResolver->resolve(
                     $duplicate->getPartitionKeyFormat(),
                     $this->itemMapping,
-                    $duplicatedItem
+                    $serializedValues
                 );
 
                 $duplicatedItem[$tableSkName] = $this->keyFormatResolver->resolve(
                     $duplicate->getSortKeyFormat(),
                     $this->itemMapping,
-                    $duplicatedItem
+                    $serializedValues
                 );
 
                 $batch[] = $duplicatedItem;
