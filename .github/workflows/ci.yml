@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['8.0']
+        php-versions: ['8.2', '8.3']
         composer-versions:
           - composer:v1
         composer-deps:
@@ -51,11 +51,10 @@ jobs:
   phpunit:
     name: PHPUnit Tests (PHP ${{ matrix.php-versions }}, Composer ${{ matrix.composer-versions }} --prefer-${{ matrix.composer-deps }})
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.php-versions == '8.0' }}
     if: "!contains(github.event.head_commit.message, '[ci-skip]')"
     strategy:
       matrix:
-        php-versions: ['8.0','8.1']
+        php-versions: ['8.2', '8.3']
         composer-versions:
           - composer:v1
           - composer:v2
