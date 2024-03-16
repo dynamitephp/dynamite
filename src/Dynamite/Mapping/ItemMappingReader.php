@@ -169,6 +169,7 @@ class ItemMappingReader
             }
         }
 
+        // @TODO: PartionKey should be optional, i have no idea when this should be useful
         if ($partitionKeyAttr === null) {
             throw ItemMappingException::noPartitionKeyFound($className);
         }
