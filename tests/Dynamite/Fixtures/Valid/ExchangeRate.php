@@ -2,43 +2,38 @@
 declare(strict_types=1);
 
 namespace Dynamite\Fixtures\Valid;
+
 use Dynamite\Configuration as Dynamite;
 
-/**
- * @Dynamite\Item(objectType="EXCHANGERATE")
- * @Dynamite\PartitionKeyFormat("EXCHANGERATE#{date}")
- * @Dynamite\SortKeyFormat("RATE#{from}#{to}")
- */
+#[Dynamite\Item(objectType: "EXCHANGERATE")]
+#[Dynamite\PartitionKeyFormat("EXCHANGERATE#{date}")]
+#[Dynamite\SortKeyFormat("RATE#{from}#{to}")]
 class ExchangeRate
 {
-
-    /**
-     * @Dynamite\PartitionKey()
-     * @var string
-     */
+    #[Dynamite\PartitionKey()]
     private string $pk;
 
-    /**
-     * @Dynamite\SortKey()
-     * @var string
-     */
+    #[Dynamite\SortKey()]
     private string $sk;
 
-    /**
-     * @Dynamite\NestedValueObjectAttribute(name="fr", type="\Dynamite\Fixtures\Valid\CurrencyNestedValueObject", property="value")
-     * @var CurrencyNestedValueObject
-     */
+    #[Dynamite\NestedValueObjectAttribute(
+        type: CurrencyNestedValueObject::class,
+        name: "fr",
+        property: "value"
+    )]
     private CurrencyNestedValueObject $from;
 
-    /**
-     * @Dynamite\Attribute(name="dt", type="string")
-     */
+    #[Dynamite\Attribute(
+        name: "dt",
+        type: "string"
+    )]
     private $date;
 
-    /**
-     * @Dynamite\NestedValueObjectAttribute(name="to", type="\Dynamite\Fixtures\Valid\CurrencyNestedValueObject", property="value")
-     * @var CurrencyNestedValueObject
-     */
+    #[Dynamite\NestedValueObjectAttribute(
+        type: CurrencyNestedValueObject::class,
+        name: "to",
+        property: "value"
+    )]
     private CurrencyNestedValueObject $to;
 
     private float $value;
