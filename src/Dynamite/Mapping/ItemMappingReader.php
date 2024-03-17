@@ -59,6 +59,7 @@ class ItemMappingReader
 
         $sortKeyFormat = null;
         /** @var SortKeyFormat|null $sortKeyAnnotation */
+        $sortKeyAnnotation = null;
         $skfAttrs = $classReflection->getAttributes(SortKeyFormat::class);
         if (count($skfAttrs) > 0) {
             $sortKeyAnnotation = reset($skfAttrs)->newInstance();
