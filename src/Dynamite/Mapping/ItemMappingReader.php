@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Dynamite\Mapping;
 
-
-use Doctrine\Common\Annotations\Reader;
 use Dynamite\Configuration\Attribute;
 use Dynamite\Configuration\AttributeInterface;
 use Dynamite\Configuration\DuplicateTo;
@@ -37,14 +35,6 @@ class ItemMappingReader
     {
         $classReflection = new ReflectionClass($className);
 
-        /** @var Item|null $item */
-        $item = $this->reader->getClassAnnotation($classReflection, Item::class);
-
-        if($item === null && $php8) {
-            $itemAttrs = $classReflection->getAttributes(Item::class);
-            if(count($itemAttrs) > 0) {
-                $item = reset($itemAttrs)->newInstance();
-            }
         $item = null;
         $itemAttrs = $classReflection->getAttributes(Item::class);
         if (count($itemAttrs) > 0) {
@@ -56,13 +46,6 @@ class ItemMappingReader
         }
 
         /** @var PartitionKeyFormat|null $partitionKeyFormat */
-        $partitionKeyFormat = $this->reader->getClassAnnotation($classReflection, PartitionKeyFormat::class);
-        if($partitionKeyFormat === null && $php8) {
-            $pkAttrs = $classReflection->getAttributes(PartitionKeyFormat::class);
-            if(count($pkAttrs) > 0) {
-                $partitionKeyFormat = reset($pkAttrs)->newInstance();
-            }
-        }
         $partitionKeyFormat = null;
         $pkAttrs = $classReflection->getAttributes(PartitionKeyFormat::class);
         if (count($pkAttrs) > 0) {
@@ -76,13 +59,6 @@ class ItemMappingReader
 
         $sortKeyFormat = null;
         /** @var SortKeyFormat|null $sortKeyAnnotation */
-        $sortKeyAnnotation = $this->reader->getClassAnnotation($classReflection, SortKeyFormat::class);
-
-        if($sortKeyAnnotation === null && $php8) {
-            $skfAttrs = $classReflection->getAttributes(SortKeyFormat::class);
-            if(count($skfAttrs) > 0) {
-                $sortKeyAnnotation = reset($skfAttrs)->newInstance();
-            }
         $skfAttrs = $classReflection->getAttributes(SortKeyFormat::class);
         if (count($skfAttrs) > 0) {
             $sortKeyAnnotation = reset($skfAttrs)->newInstance();
