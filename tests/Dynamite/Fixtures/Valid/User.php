@@ -2,53 +2,33 @@
 declare(strict_types=1);
 
 namespace Dynamite\Fixtures\Valid;
+
 use Dynamite\Configuration as Dynamite;
 
-
-/**
- * @Dynamite\Item(objectType="USER")
- * @Dynamite\PartitionKeyFormat("USER#{id}")
- * @Dynamite\SortKeyFormat("USER")
- * @Dynamite\DuplicateTo(pk="UDATA#{email}", sk="UDATA", props={"id", "email", "username"})
- * @Dynamite\DuplicateTo(pk="UDATA#{username}", sk="UDATA", props={"id", "email", "username"})
- */
+#[Dynamite\Item(objectType: "USER")]
+#[Dynamite\PartitionKeyFormat("USER#{id}")]
+#[Dynamite\SortKeyFormat("USER")]
+#[Dynamite\DuplicateTo(pk: "UDATA#{email}", sk: "UDATA", props: ["id", "email", "username"])]
+#[Dynamite\DuplicateTo(pk: "UDATA#{username}", sk: "UDATA", props: ["id", "email", "username"])]
 class User
 {
 
-    /**
-     * @Dynamite\PartitionKey()
-     * @var string
-     */
+    #[Dynamite\PartitionKey()]
     protected string $pk;
 
-    /**
-     * @Dynamite\SortKey()
-     * @var string
-     */
+    #[Dynamite\SortKey()]
     protected string $sk;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="id")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "id", type: "string")]
     private string $id;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="mail")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "mail", type: "string")]
     private string $email;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="nick")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "nick", type: "string")]
     private string $username;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="dnam")
-     * @var string
-     */
+    #[Dynamite\Attribute(type:"string", name:"dnam")]
     private string $usersDogName;
 
 
