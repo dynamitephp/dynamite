@@ -80,8 +80,8 @@ class ItemMappingReader
 
         $classPropertyReflections = $classReflection->getProperties();
 
-        $classAnnotations = $this->reader->getClassAnnotations($classReflection);
-        $duplicates = array_filter($classAnnotations, fn($annot) => $annot instanceof DuplicateTo);
+        $duplicates = $this->findAllDuplicateToAttributes($classReflection);
+
 
         foreach ($classPropertyReflections as $propertyReflection) {
             $propertyName = $propertyReflection->getName();
@@ -209,4 +209,17 @@ class ItemMappingReader
         return $nestedValueObject;
     }
 
+
+    private function findAllDuplicateToAttributes(ReflectionClass $reflectionClass): array {
+        $attrs = $reflectionClass->getAttributes();
+        $output = [];
+
+        foreach ($attrs as $attr) {
+            if($attr->getName() === DuplicateTo::class) {
+                $output[] = $attr->newInstance();
+            }
+        }
+        
+        return $output;
+    }
 }
