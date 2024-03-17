@@ -86,7 +86,7 @@ class ItemMappingReader
         foreach ($classPropertyReflections as $propertyReflection) {
             $propertyName = $propertyReflection->getName();
 
-            $attribute = $this->findAttributeType($propertyReflection, $php8);
+            $attribute = $this->findAttributeType($propertyReflection);
 
             if ($attribute !== null) {
                 $attributesMapping[$propertyName] = $attribute;
@@ -117,15 +117,13 @@ class ItemMappingReader
             }
 
             /** @var PartitionKey|null $partitionKey */
-            $partitionKey = $this->reader->getPropertyAnnotation($propertyReflection, PartitionKey::class);
-
-            if ($partitionKey === null && $php8) {
-                $pkAttrs = $propertyReflection->getAttributes(PartitionKey::class);
-                if (count($pkAttrs) > 0) {
-                    $partitionKey = reset($pkAttrs)->newInstance();
-                }
+            $partitionKey = null;
+            $pkAttrs = $propertyReflection->getAttributes(PartitionKey::class);
+            if (count($pkAttrs) > 0) {
+                $partitionKey = reset($pkAttrs)->newInstance();
             }
-            if ($partitionKey !== null && $partitionKeyAttr !== null) {
+
+            if ($partitionKey !== null && count($pkAttrs) > 1) {
                 throw ItemMappingException::moreThanOnePartitionKey($partitionKeyAttr, $propertyName, $className);
             }
 
@@ -134,13 +132,14 @@ class ItemMappingReader
             }
 
             /** @var SortKey|null $sortKey */
-            $sortKey = $this->reader->getPropertyAnnotation($propertyReflection, SortKey::class);
+            $sortKey = $this->extractPhpAttributeFromProperty(
+                $propertyReflection,
+                SortKey::class
+            );
 
-            if ($sortKey === null && $php8) {
-                $skAttrs = $propertyReflection->getAttributes(SortKey::class);
-                if (count($skAttrs) > 0) {
-                    $sortKey = reset($skAttrs)->newInstance();
-                }
+            $skAttrs = $propertyReflection->getAttributes(SortKey::class);
+            if (count($skAttrs) > 0) {
+                $sortKey = reset($skAttrs)->newInstance();
             }
             if ($sortKeyAttr !== null && $sortKey !== null) {
                 throw ItemMappingException::moreThanOneSortKey($sortKeyAttr, $propertyName, $className);
@@ -171,55 +170,76 @@ class ItemMappingReader
      * @param \ReflectionProperty $property
      * @return AttributeInterface|null
      */
-    protected function findAttributeType(\ReflectionProperty $property, bool $php8): ?AttributeInterface
+    private function findAttributeType(\ReflectionProperty $property): ?AttributeInterface
     {
-        /** @var null|Attribute $simpleAttribute */
-        $simpleAttribute = $this->reader->getPropertyAnnotation($property, Attribute::class);
+        $attribute = $this->extractPhpAttributeFromProperty(
+            $property,
+            Attribute::class
+        );
 
-        if ($simpleAttribute === null && $php8) {
-            $simpleAttrs = $property->getAttributes(Attribute::class);
-            if (count($simpleAttrs) > 0) {
-                return reset($simpleAttrs)->newInstance();
-            }
+        if ($attribute !== null) {
+            return $attribute;
         }
 
-        if ($simpleAttribute !== null) {
-            return $simpleAttribute;
-        }
-
-        /** @var null|NestedItemAttribute $nestedItemAttribute */
-        $nestedItemAttribute = $this->reader->getPropertyAnnotation($property, NestedItemAttribute::class);
+        $nestedItemAttribute = $this->extractPhpAttributeFromProperty(
+            $property,
+            NestedItemAttribute::class
+        );
 
         if ($nestedItemAttribute !== null) {
             return $nestedItemAttribute;
         }
 
-        /** @var null|NestedValueObjectAttribute $nestedValueObject */
-        $nestedValueObject = $this->reader->getPropertyAnnotation($property, NestedValueObjectAttribute::class);
+        $nestedVOAttribute = $this->extractPhpAttributeFromProperty(
+            $property,
+            NestedValueObjectAttribute::class
+        );
 
-        if ($nestedValueObject !== null) {
-            $nestedValueObjectItemReflection = new ReflectionClass($nestedValueObject->getType());
+        if ($nestedVOAttribute !== null) {
+            $nestedValueObjectItemReflection = new ReflectionClass($nestedVOAttribute->getType());
 
-            $propertyToCheck = $nestedValueObject->getProperty();
+            $propertyToCheck = $nestedVOAttribute->getProperty();
             if (!$nestedValueObjectItemReflection->hasProperty($propertyToCheck)) {
-                throw ItemMappingException::noPropertyInClass($propertyToCheck, $nestedValueObject->getType());
+                throw ItemMappingException::noPropertyInClass($propertyToCheck, $nestedVOAttribute->getType());
             }
         }
 
-        return $nestedValueObject;
+        return $nestedVOAttribute;
     }
 
 
-    private function findAllDuplicateToAttributes(ReflectionClass $reflectionClass): array {
+    private function findAllDuplicateToAttributes(ReflectionClass $reflectionClass): array
+    {
         $attrs = $reflectionClass->getAttributes();
         $output = [];
 
         foreach ($attrs as $attr) {
-            if($attr->getName() === DuplicateTo::class) {
+            if ($attr->getName() === DuplicateTo::class) {
                 $output[] = $attr->newInstance();
             }
         }
-        
+
         return $output;
+    }
+
+    /**
+     * @psalm-param class-string $fqcnToExtract
+     * @param \ReflectionProperty $property
+     * @param string $fqcnToExtract
+     * @return AttributeInterface|null
+     */
+    private function extractPhpAttributeFromProperty(
+        \ReflectionProperty $property,
+        string              $fqcnToExtract
+    ): ?object
+    {
+        $attrs = $property->getAttributes($fqcnToExtract);
+        $attrsCount = count($attrs);
+
+        if ($attrsCount === 0) {
+            return null;
+        }
+
+        return reset($attrs)->newInstance();
     }
 }
