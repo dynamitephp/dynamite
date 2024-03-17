@@ -30,6 +30,7 @@ class ItemMappingReader
      * @psalm-param class-string $className
      * @return ItemMapping
      * @throws \ReflectionException
+     * @throws ItemMappingException
      */
     public function getMappingFor(string $className): ItemMapping
     {
@@ -94,13 +95,12 @@ class ItemMappingReader
 
                 if ($attribute instanceof NestedItemAttribute) {
                     $nestedItemReflection = new ReflectionClass($attribute->getType());
-                    /** @var NestedItem|null $nestedItemConfiguration */
-                    $nestedItemConfiguration = $this->reader->getClassAnnotation($nestedItemReflection, NestedItem::class);
-                    if ($nestedItemConfiguration === null) {
+                    $nestedItemConfigurationAttr = $nestedItemReflection->getAttributes(NestedItem::class);
+                    if (count($nestedItemConfigurationAttr) === 0) {
                         throw ItemMappingException::missingNestemItemAnnotationOnReferencedObject($attribute->getType());
                     }
 
-                    $nestedItems[$propertyName] = $nestedItemConfiguration;
+                    $nestedItems[$propertyName] = $nestedItemConfigurationAttr[0]->newInstance();
                 }
 
                 $shortenerReflections = $propertyReflection->getAttributes(Shorten::class);
