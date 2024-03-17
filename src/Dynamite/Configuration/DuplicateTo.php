@@ -16,25 +16,20 @@ use Doctrine\Common\Annotations\Annotation\Target;
  * @author pizzaminded <mikolajczajkowsky@gmail.com>
  * @license MIT
  */
-#[\Attribute(flags: \Attribute::TARGET_CLASS)]
+#[\Attribute(flags: \Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
 class DuplicateTo
 {
-    public string $pk;
-
-    public ?string $sk;
-
-    /**
-     * Applies transformations to Primary key attributes.
-     * @Enum({"UPPER", "LOWER"})
-     * @deprecated - soon to be removed - use {upper:propName} or {lower:propName} filter
-     */
-    public ?string $transform = null;
-
-    /**
-     * Properties from base entity that should be put in duplicated item
-     * @var array<string, mixed>
-     */
-    public array $props = [];
+    public function __construct(
+        protected string $pk,
+        protected ?string $sk,
+        /**
+         * Properties from base entity that should be put in duplicated item
+         * @var array<string, mixed>
+        */
+        protected array $props = []
+    )
+    {
+    }
 
     /**
      * @return array
@@ -53,13 +48,4 @@ class DuplicateTo
     {
         return $this->sk;
     }
-
-    /**
-     * @return string|null
-     */
-    public function getTransform(): ?string
-    {
-        return $this->transform;
-    }
-
 }
