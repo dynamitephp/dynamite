@@ -27,13 +27,6 @@ use function reset;
 class ItemMappingReader
 {
 
-    protected Reader $reader;
-
-    public function __construct(Reader $reader)
-    {
-        $this->reader = $reader;
-    }
-
     /**
      * @param string $className
      * @psalm-param class-string $className
@@ -43,7 +36,6 @@ class ItemMappingReader
     public function getMappingFor(string $className): ItemMapping
     {
         $classReflection = new ReflectionClass($className);
-        $php8 = PHP_VERSION_ID >= 80000;
 
         /** @var Item|null $item */
         $item = $this->reader->getClassAnnotation($classReflection, Item::class);
@@ -53,6 +45,10 @@ class ItemMappingReader
             if(count($itemAttrs) > 0) {
                 $item = reset($itemAttrs)->newInstance();
             }
+        $item = null;
+        $itemAttrs = $classReflection->getAttributes(Item::class);
+        if (count($itemAttrs) > 0) {
+            $item = reset($itemAttrs)->newInstance();
         }
 
         if ($item === null) {
@@ -67,6 +63,12 @@ class ItemMappingReader
                 $partitionKeyFormat = reset($pkAttrs)->newInstance();
             }
         }
+        $partitionKeyFormat = null;
+        $pkAttrs = $classReflection->getAttributes(PartitionKeyFormat::class);
+        if (count($pkAttrs) > 0) {
+            $partitionKeyFormat = reset($pkAttrs)->newInstance();
+        }
+
         if ($partitionKeyFormat === null) {
             throw ItemMappingException::noPartitionKeyFormatFound($className);
         }
@@ -81,6 +83,9 @@ class ItemMappingReader
             if(count($skfAttrs) > 0) {
                 $sortKeyAnnotation = reset($skfAttrs)->newInstance();
             }
+        $skfAttrs = $classReflection->getAttributes(SortKeyFormat::class);
+        if (count($skfAttrs) > 0) {
+            $sortKeyAnnotation = reset($skfAttrs)->newInstance();
         }
 
         if ($sortKeyAnnotation !== null) {
@@ -138,11 +143,11 @@ class ItemMappingReader
             /** @var PartitionKey|null $partitionKey */
             $partitionKey = $this->reader->getPropertyAnnotation($propertyReflection, PartitionKey::class);
 
-            if($partitionKey === null && $php8) {
-               $pkAttrs = $propertyReflection->getAttributes(PartitionKey::class);
-               if(count($pkAttrs) > 0) {
-                   $partitionKey = reset($pkAttrs)->newInstance();
-               }
+            if ($partitionKey === null && $php8) {
+                $pkAttrs = $propertyReflection->getAttributes(PartitionKey::class);
+                if (count($pkAttrs) > 0) {
+                    $partitionKey = reset($pkAttrs)->newInstance();
+                }
             }
             if ($partitionKey !== null && $partitionKeyAttr !== null) {
                 throw ItemMappingException::moreThanOnePartitionKey($partitionKeyAttr, $propertyName, $className);
@@ -155,9 +160,9 @@ class ItemMappingReader
             /** @var SortKey|null $sortKey */
             $sortKey = $this->reader->getPropertyAnnotation($propertyReflection, SortKey::class);
 
-            if($sortKey === null && $php8) {
+            if ($sortKey === null && $php8) {
                 $skAttrs = $propertyReflection->getAttributes(SortKey::class);
-                if(count($skAttrs) > 0) {
+                if (count($skAttrs) > 0) {
                     $sortKey = reset($skAttrs)->newInstance();
                 }
             }
@@ -195,9 +200,9 @@ class ItemMappingReader
         /** @var null|Attribute $simpleAttribute */
         $simpleAttribute = $this->reader->getPropertyAnnotation($property, Attribute::class);
 
-        if($simpleAttribute === null && $php8) {
+        if ($simpleAttribute === null && $php8) {
             $simpleAttrs = $property->getAttributes(Attribute::class);
-            if(count($simpleAttrs) > 0) {
+            if (count($simpleAttrs) > 0) {
                 return reset($simpleAttrs)->newInstance();
             }
         }
