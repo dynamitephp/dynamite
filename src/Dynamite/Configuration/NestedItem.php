@@ -17,24 +17,24 @@ namespace Dynamite\Configuration;
 #[\Attribute(flags: \Attribute::TARGET_CLASS)]
 class NestedItem
 {
-    /**
-     * When set, payload from persistence layer will be passed as a first argument
-     * Method must be public and static
-     * @var string|null
-     */
-    private ?string $deserializeMethod;
 
-    /**
-     * When set, values from properties will be ignored and given method will be called
-     * Function cannot be static, must be public and return array
-     * @var string|null
-     */
-    private ?string $serializeMethod;
+    public function __construct(
+        /**
+         * When set, payload from persistence layer will be passed as a first argument
+         * Method must be public and static
+         * @var string|null
+         */
+        private ?string $deserializeMethod = null,
 
-    public function __construct(array $props)
+        /**
+         * When set, values from properties will be ignored and given method will be called
+         * Function cannot be static, must be public and return array
+         * @var string|null
+         */
+        private ?string $serializeMethod = null
+    )
     {
-        $this->deserializeMethod = $props['deserializeMethod'] ?? null;
-        $this->serializeMethod = $props['serializeMethod'] ?? null;
+
     }
 
     /**
