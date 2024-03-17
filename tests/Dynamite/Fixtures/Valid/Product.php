@@ -2,49 +2,33 @@
 declare(strict_types=1);
 
 namespace Dynamite\Fixtures\Valid;
+
 use Dynamite\Configuration as Dynamite;
 
-/**
- * @Dynamite\Item(objectType="PRODUCT")
- * @Dynamite\PartitionKeyFormat("PRODUCT#{ean}")
- * @Dynamite\SortKeyFormat("PRODUCT")
- */
+#[Dynamite\Item(objectType: "PRODUCT")]
+#[Dynamite\PartitionKeyFormat("PRODUCT#{ean}")]
+#[Dynamite\SortKeyFormat("PRODUCT")]
 class Product
 {
-    /**
-     * @Dynamite\PartitionKey()
-     * @var string
-     */
+    #[Dynamite\PartitionKey()]
     private string $pk;
 
-    /**
-     * @Dynamite\SortKey()
-     * @var string
-     */
+    #[Dynamite\SortKey()]
     private string $sk;
 
-    /**
-     * @Dynamite\NestedItemAttribute(name="nf", type="\Dynamite\Fixtures\Valid\ProductNutritionNestedItem")
-     * @var ProductNutritionNestedItem
-     */
+    #[Dynamite\NestedItemAttribute(
+        type: ProductNutritionNestedItem::class,
+        name: "nf"
+    )]
     private ProductNutritionNestedItem $nutritionFacts;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="ean")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "ean", type: "string")]
     private string $ean;
 
-    /**
-     * @Dynamite\Attribute(type="string", name="name")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "name", type: "string")]
     private string $name;
 
-    /**
-     * @Dynamite\Attribute(type="number", name="wght")
-     * @var string
-     */
+    #[Dynamite\Attribute(name: "wght", type: "number")]
     private int $weight;
 
     /**
