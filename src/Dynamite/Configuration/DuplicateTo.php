@@ -24,7 +24,7 @@ class DuplicateTo
         protected ?string $sk,
         /**
          * Properties from base entity that should be put in duplicated item
-         * @var array<string, mixed>
+         * @var array<string>
         */
         protected array $props = []
     )
