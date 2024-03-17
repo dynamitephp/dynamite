@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Dynamite\Fixtures\Valid\Php8;
+namespace Dynamite\Fixtures\Valid;
 
 use Dynamite\Configuration as Dynamite;
 

@@ -6,9 +6,9 @@ namespace Dynamite;
 
 use Dynamite\Exception\SerializationException;
 use Dynamite\Fixtures\Valid\BankAccount;
+use Dynamite\Fixtures\Valid\Car;
 use Dynamite\Fixtures\Valid\CurrencyNestedValueObject;
 use Dynamite\Fixtures\Valid\ExchangeRate;
-use Dynamite\Fixtures\Valid\Php8\Car;
 use Dynamite\Fixtures\Valid\Product;
 use Dynamite\Fixtures\Valid\ProductNutritionNestedItem;
 use Dynamite\Fixtures\Valid\UserActivity;
