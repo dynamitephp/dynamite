@@ -14,17 +14,40 @@ use Dynamite\Exception\ConfigurationException;
  * @license MIT
  */
 #[\Attribute(flags: \Attribute::TARGET_PROPERTY)]
-class NestedItemAttribute extends AbstractAttribute
+class NestedItemAttribute implements AttributeInterface
 {
+
+    /**
+     * @throws ConfigurationException
+     */
+    public function __construct(
+        protected string $type,
+        protected string $name,
+    ) {
+        $this->assertType($this->type);
+    }
 
     /**
      * @param string $type
      * @return void
+     * @throws ConfigurationException
      */
-    protected function assertType(string $type)
+    protected function assertType(string $type): void
     {
         if (!class_exists($type)) {
-            throw new ConfigurationException(sprintf('Class "%s" does not exists and cannot be used as a type in "%s" annotation.', $type, self::class));
+            throw new ConfigurationException(sprintf('Class "%s" does not exists and cannot be used as a type in "%s" attribute.', $type, self::class));
         }
     }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+
 }

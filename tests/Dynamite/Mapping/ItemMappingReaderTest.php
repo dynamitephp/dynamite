@@ -7,7 +7,7 @@ namespace Dynamite\Mapping;
 use Dynamite\Fixtures\Dummy;
 use Dynamite\Fixtures\DummyItem;
 use Dynamite\Fixtures\DummyItemWithPartitionKeyFormat;
-use Dynamite\Fixtures\Valid\Php8\AccessToken;
+use Dynamite\Fixtures\Valid\AccessToken;
 use Dynamite\Fixtures\Valid\UserActivity;
 use Dynamite\Test\DynamiteTestSuiteHelperTrait;
 use PHPUnit\Framework\TestCase;

@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Dynamite\Fixtures\Valid;
 use Dynamite\Configuration as Dynamite;
 
-/**
- * @Dynamite\NestedItem(serializeMethod="toArray")
- */
+#[Dynamite\NestedItem(serializeMethod:"toArray")]
 class ProductNutritionNestedItem
 {
     private int $calories;
