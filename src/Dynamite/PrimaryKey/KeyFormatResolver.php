@@ -27,7 +27,7 @@ class KeyFormatResolver
             $propName = $placeholder;
             if (str_contains($placeholder, ':')) {
                 $splitPlaceholder = explode(':', $placeholder);
-                $propName = array_pop($splitPlaceholder);
+                $propName = array_shift($splitPlaceholder);
                 $filters = $splitPlaceholder;
             }
 
