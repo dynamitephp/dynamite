@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dynamite;
 
+use Aws\DynamoDb\SetValue;
 use Dynamite\Configuration\Attribute;
 use Dynamite\Configuration\NestedItemAttribute;
 use Dynamite\Configuration\NestedValueObjectAttribute;
@@ -133,6 +134,10 @@ class ItemSerializer
                         $propertyReflection->setValue($instantiatedObject, $shortener->getFrom());
                         continue 2;
                     }
+                }
+
+                if($propValue instanceof SetValue) {
+                    $propValue = $propValue->toArray();
                 }
 
                 $propertyReflection->setValue($instantiatedObject, $propValue);
