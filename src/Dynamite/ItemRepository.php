@@ -39,8 +39,8 @@ class ItemRepository
 
     /**
      * When passing a string to $partitionKey or $sortKey, Dynamite will pass them to DB directly.
-     * But when passing an array, it will build an key using data from SortKeyFormat and PrimaryKeyFormat annotations.
-     * Remember to pass all "fragments" of key in array in given format:
+     * But when passing an array, it will build an key using data from SortKeyFormat and PrimaryKeyFormat attributes.
+     * Remember to pass all fragments of key in array in given format:
      * [ fieldName => value ].
      *
      * @param array<string, string>|string $partitionKey
