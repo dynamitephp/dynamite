@@ -6,6 +6,14 @@ Work with AWS DynamoDB and Single-Table-Designed tables in your apps.
 
 Requires `aws/aws-sdk-php` with `3.*` version. 
 
+## Getting started
+
+### Installation
+
+`composer require dynamite/dynamite`
+
+### Configuration
+
 ## Some important things you need to know:
 
 ### Your table schema
@@ -14,23 +22,7 @@ Requires `aws/aws-sdk-php` with `3.*` version.
 - Dynamite assumes that tables/indexes are created and active.
 
 ### You need to bring your own ID Generator
-There are some proposals you can use:
-
-#### 1. [ramsey/uuid](https://github.com/ramsey/uuid)
-  - Literally an UUID
-  - Really low chance of collision
-  
-#### 2. [robinvdvleuten/ulid](https://github.com/robinvdvleuten/php-ulid)  ([**see ULID spec**](https://github.com/ulid/spec))
-  - Time-based
-  - Lexicographically sortable
-  - UUID compliant
-  - Really low chance of collision
-  - Higher precision than KSUID
-#### 3. [tuupola/ksuid](https://github.com/tuupola/ksuid)  ([**Read more about KSUID**](https://github.com/segmentio/ksuid))
-  - Time-based
-  - Lexicographically sortable
-  - Naturally ordered
-  - Really low chance of collision
+See `docs/bring-your-own-id.md` for more information.
 
 ## The unordered roadmap to `v1.0.0`
 - [x] Creating an item
