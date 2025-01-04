@@ -192,6 +192,14 @@ class ItemSerializer
                 $nestedItemConfiguration = $itemMapping->getNestedItem($propertyName);
                 $deserializeMethod = $nestedItemConfiguration->getDeserializeMethod();
                 if ($deserializeMethod !== null) {
+                    if($attribute->isCollection()) {
+                        $value = [];
+                        foreach ($propValue as $singleValue) {
+                            $value[] = $nestedItemFqcn::$deserializeMethod($singleValue);
+                        }
+                        $propertyReflection->setValue($instantiatedObject, $value);
+                        continue;
+                    }
                     $propertyReflection->setValue($instantiatedObject, $nestedItemFqcn::$deserializeMethod($propValue));
                     continue;
                 }

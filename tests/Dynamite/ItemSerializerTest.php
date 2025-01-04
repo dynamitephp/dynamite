@@ -87,6 +87,39 @@ class ItemSerializerTest extends TestCase
         self::assertSame($snapshot, $serializedProduct);
     }
 
+    public function testObjectHydrationWithNestedItemCollectionWithCustomDeserializer(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $user = new User();
+
+        $user->identityCards[] = new IdentityCard('PASSPORT', 'XXX124');
+        $user->identityCards[] = new IdentityCard('GOV_ID', 'YYY124');
+
+        $productMapping = $mappingReader->getMappingFor(User::class);
+
+        $data = [
+            'ids' => [
+                [
+                    'type' => 'PASSPORT',
+                    'number' => 'XXX124'
+                ],
+                [
+                    'type' => 'GOV_ID',
+                    'number' => 'YYY124'
+                ]
+            ],
+
+        ];
+        $userObject = $serializer->hydrateObject(User::class, $productMapping, $data);
+
+
+
+
+        self::assertEquals($user, $userObject);
+    }
+
 
     public function testObjectSerializationForNestedValueObject(): void
     {
