@@ -23,6 +23,7 @@ class NestedItemAttribute implements AttributeInterface
     public function __construct(
         protected string $type,
         protected string $name,
+        private bool $collection = false
     ) {
         $this->assertType($this->type);
     }
@@ -48,6 +49,9 @@ class NestedItemAttribute implements AttributeInterface
     {
         return $this->name;
     }
-
-
+    
+    public function isCollection(): bool
+    {
+        return $this->collection;
+    }
 }

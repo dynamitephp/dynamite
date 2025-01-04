@@ -86,6 +86,14 @@ class ItemSerializer
                 $nestedItemConfiguration = $itemMapping->getNestedItems()[$propertyName];
                 $serializeMethod = $nestedItemConfiguration->getSerializeMethod();
                 if ($serializeMethod !== null) {
+                    if($attribute->isCollection()) {
+                        foreach ($propertyValue as $collectionItem) {
+                            $values[$propertyName][] = $collectionItem->$serializeMethod();
+                        }
+                        continue;
+                    }
+
+
                     $values[$propertyName] = $propertyValue->$serializeMethod();
                     continue;
                 }

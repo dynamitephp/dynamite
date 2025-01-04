@@ -5,6 +5,8 @@ namespace Dynamite;
 
 
 use Dynamite\Exception\SerializationException;
+use Dynamite\Fixtures\IdentityCard;
+use Dynamite\Fixtures\User;
 use Dynamite\Fixtures\Valid\BankAccount;
 use Dynamite\Fixtures\Valid\Car;
 use Dynamite\Fixtures\Valid\CurrencyNestedValueObject;
@@ -50,6 +52,36 @@ class ItemSerializerTest extends TestCase
             'ean' => '59012345678',
             'name' => 'Tuna',
             'wght' => 350
+        ];
+
+        self::assertSame($snapshot, $serializedProduct);
+    }
+
+    public function testObjectSerializationWithNestedItemCollectionWithCustomSerializer(): void
+    {
+        $serializer = $this->createItemSerializer();
+        $mappingReader = $this->createItemMappingReader();
+
+        $user = new User();
+
+        $user->identityCards[] = new IdentityCard('PASSPORT', 'XXX123');
+        $user->identityCards[] = new IdentityCard('GOV_ID', 'YYY123');
+
+        $productMapping = $mappingReader->getMappingFor(User::class);
+        $serializedProduct = $serializer->serialize($user, $productMapping);
+
+        $snapshot = [
+            'ids' => [
+                [
+                    'type' => 'PASSPORT',
+                    'number' => 'XXX123'
+                ],
+                [
+                    'type' => 'GOV_ID',
+                    'number' => 'YYY123'
+                ]
+            ],
+
         ];
 
         self::assertSame($snapshot, $serializedProduct);
