@@ -161,7 +161,8 @@ class ItemRepository
             if (is_array($value)) {
                 foreach ($value as $valueKey => $val) {
                     if (is_array($val)) {
-                        throw new DynamiteException('FIXME: more than one nested array');
+                        //@TODO: determine how (or why) support placeholders from collections
+                        continue;
                     }
                     $primaryKeyPlaceholders[sprintf('{%s.%s}', $property, $valueKey)] = $val;
                 }
