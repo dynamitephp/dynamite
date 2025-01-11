@@ -68,7 +68,13 @@ class ItemManager
             if ($customRepositoryClass !== null) {
                 $extends = class_parents($customRepositoryClass);
                 if (!isset($extends[ItemRepository::class])) {
-                    throw new ItemRepositoryException('Classs "%s" cannot be used as a Item repository as it does not extend "%s" class.', $customRepositoryClass, $classToInstantiate);
+                    throw new ItemRepositoryException(
+                        sprintf(
+                            'Class "%s" cannot be used as a Item repository as it does not extend "%s" class.',
+                            $customRepositoryClass,
+                            $classToInstantiate
+                        )
+                    );
                 }
 
                 $classToInstantiate = $customRepositoryClass;
