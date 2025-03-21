@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Dynamite\Mapping;
 
 
-use Doctrine\Common\Annotations\Reader;
 use Psr\Cache\CacheItemInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
@@ -19,9 +18,8 @@ class CachedItemMappingReader extends ItemMappingReader
 {
     protected CacheInterface $cache;
 
-    public function __construct(Reader $reader, CacheInterface $cache)
+    public function __construct(CacheInterface $cache)
     {
-        parent::__construct($reader);
         $this->cache = $cache;
     }
 
