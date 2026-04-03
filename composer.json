@@ -6,8 +6,7 @@
     "require": {
         "php": ">= 8 | 8.1",
         "guzzlehttp/guzzle": "> 7",
-        "aws/aws-sdk-php": "^3.216",
-        "symfony/polyfill-php80": "^1.23"
+        "aws/aws-sdk-php": "^3.216"
     },
     "require-dev": {
         "vimeo/psalm": "^4.3",
